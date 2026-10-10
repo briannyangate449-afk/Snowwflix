@@ -4,9 +4,10 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./database/db.js");
 const movieRoutes = require("./routes/movies");
+const authRoutes = require("./routes/auth");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -19,8 +20,9 @@ app.get("/", (req, res) => {
   res.send("🎬 Welcome to SNOWWFLIX!");
 });
 
-// Use movie routes
+// Routes
 app.use("/movies", movieRoutes);
+app.use("/api/auth", authRoutes);
 
 // Start server
 app.listen(PORT, () => {
