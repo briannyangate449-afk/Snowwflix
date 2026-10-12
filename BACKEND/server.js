@@ -3,7 +3,6 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./db.js");
-const movieRoutes = require("./routes/movies");
 const authRoutes = require("./routes/auth");
 
 const app = express();
@@ -20,8 +19,7 @@ app.get("/", (req, res) => {
   res.send("🎬 Welcome to SNOWWFLIX!");
 });
 
-// Routes
-app.use("/movies", movieRoutes);
+// Auth routes only for now
 app.use("/api/auth", authRoutes);
 
 // Start server
