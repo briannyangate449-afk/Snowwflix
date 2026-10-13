@@ -60,7 +60,7 @@ exports.syncUser = async (req, res) => {
       await user.save();
     }
 
-    // Issue your own JWT (optional but useful)
+    // Issue your own JWT
     const token = jwt.sign(
       {
         id: user._id,
