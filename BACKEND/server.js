@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
   res.send("🎬 Welcome to SNOWWFLIX!");
 });
 
-// Auth routes only for now
+// Auth routes
 app.use("/api/auth", authRoutes);
 
 // Start server
