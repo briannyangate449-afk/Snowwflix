@@ -4,20 +4,25 @@ const jwt = require("jsonwebtoken");
 
 // Initialize Firebase Admin only once
 if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY
-        ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
-        : undefined,
-    }),
-  });
+  try {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY
+          ? process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n")
+          : undefined,
+      }),
+    });
+    console.log("✅ Firebase Admin initialized");
+  } catch (err) {
+    console.error("❌ Firebase Admin initialization failed:", err.message);
+  }
 }
 
 exports.syncUser = async (req, res) => {
   try {
-    const { idToken, extraData } = req.body;
+    const { idToken, extraData = {} } = req.body;
 
     if (!idToken) {
       return res.status(400).json({ message: "idToken is required" });
@@ -25,20 +30,34 @@ exports.syncUser = async (req, res) => {
 
     // Verify the Firebase ID token
     const decoded = await admin.auth().verifyIdToken(idToken);
-    const { uid, email, name, picture, email_verified, firebase } = decoded;
+    const {
+      uid,
+      email,
+      name,
+      picture,
+      email_verified,
+      firebase,
+    } = decoded;
 
-    // Find or create user in MongoDB
+    // Find existing user by firebaseUid
     let user = await User.findOne({ firebaseUid: uid });
 
     if (!user) {
+      // Create new user
       user = await User.create({
         firebaseUid: uid,
         email: email || "",
-        displayName: name || extraData?.username || (email ? email.split("@")[0] : "User"),
-        username: extraData?.username || name || (email ? email.split("@")[0] : "User"),
-        firstName: extraData?.firstName || "",
-        lastName: extraData?.lastName || "",
-        phone: extraData?.phone || "",
+        displayName:
+          name ||
+          extraData.username ||
+          (email ? email.split("@")[0] : "User"),
+        username:
+          extraData.username ||
+          name ||
+          (email ? email.split("@")[0] : "User"),
+        firstName: extraData.firstName || "",
+        lastName: extraData.lastName || "",
+        phone: extraData.phone || "",
         photoURL: picture || "",
         provider: firebase?.sign_in_provider || "password",
         emailVerified: !!email_verified,
@@ -52,10 +71,10 @@ exports.syncUser = async (req, res) => {
       user.emailVerified = !!email_verified;
       user.lastLogin = new Date();
 
-      if (extraData?.username) user.username = extraData.username;
-      if (extraData?.firstName) user.firstName = extraData.firstName;
-      if (extraData?.lastName) user.lastName = extraData.lastName;
-      if (extraData?.phone) user.phone = extraData.phone;
+      if (extraData.username) user.username = extraData.username;
+      if (extraData.firstName) user.firstName = extraData.firstName;
+      if (extraData.lastName) user.lastName = extraData.lastName;
+      if (extraData.phone) user.phone = extraData.phone;
 
       await user.save();
     }
@@ -80,7 +99,11 @@ exports.syncUser = async (req, res) => {
         username: user.username,
         email: user.email,
         displayName: user.displayName,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        photoURL: user.photoURL,
         isAdmin: user.isAdmin,
+        emailVerified: user.emailVerified,
       },
     });
   } catch (error) {
