@@ -14,9 +14,9 @@ if (!admin.apps.length) {
           : undefined,
       }),
     });
-    console.log("✅ Firebase Admin initialized");
+    console.log("✅ Firebase Admin initialized successfully");
   } catch (err) {
-    console.error("❌ Firebase Admin initialization failed:", err.message);
+    console.error("❌ Firebase Admin failed to initialize:", err.message);
   }
 }
 
@@ -28,33 +28,19 @@ exports.syncUser = async (req, res) => {
       return res.status(400).json({ message: "idToken is required" });
     }
 
-    // Verify the Firebase ID token
+    // Verify Firebase ID token
     const decoded = await admin.auth().verifyIdToken(idToken);
-    const {
-      uid,
-      email,
-      name,
-      picture,
-      email_verified,
-      firebase,
-    } = decoded;
+    const { uid, email, name, picture, email_verified, firebase } = decoded;
 
-    // Find existing user by firebaseUid
+    // Find or create user
     let user = await User.findOne({ firebaseUid: uid });
 
     if (!user) {
-      // Create new user
       user = await User.create({
         firebaseUid: uid,
         email: email || "",
-        displayName:
-          name ||
-          extraData.username ||
-          (email ? email.split("@")[0] : "User"),
-        username:
-          extraData.username ||
-          name ||
-          (email ? email.split("@")[0] : "User"),
+        displayName: name || extraData.username || (email ? email.split("@")[0] : "User"),
+        username: extraData.username || name || (email ? email.split("@")[0] : "User"),
         firstName: extraData.firstName || "",
         lastName: extraData.lastName || "",
         phone: extraData.phone || "",
@@ -63,6 +49,7 @@ exports.syncUser = async (req, res) => {
         emailVerified: !!email_verified,
         lastLogin: new Date(),
       });
+      console.log("🆕 New user created:", user.email);
     } else {
       // Update existing user
       user.email = email || user.email;
@@ -77,20 +64,21 @@ exports.syncUser = async (req, res) => {
       if (extraData.phone) user.phone = extraData.phone;
 
       await user.save();
+      console.log("🔄 User updated:", user.email);
     }
 
-    // Issue your own JWT
+    // Create JWT
     const token = jwt.sign(
       {
         id: user._id,
         firebaseUid: user.firebaseUid,
         isAdmin: user.isAdmin,
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || "fallback_secret_change_me",
       { expiresIn: "7d" }
     );
 
-    res.json({
+    res.status(200).json({
       message: "User synced successfully",
       token,
       user: {
@@ -107,9 +95,9 @@ exports.syncUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Sync error:", error);
+    console.error("❌ Sync error:", error.message);
     res.status(401).json({
-      message: "Invalid or expired token",
+      message: "Failed to sync user",
       error: error.message,
     });
   }
