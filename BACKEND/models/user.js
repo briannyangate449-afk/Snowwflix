@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
     username: {
       type: String,
       trim: true,
-      sparse: true, // allows multiple nulls but unique when present
+      sparse: true,
     },
     displayName: {
       type: String,
@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema(
     },
     provider: {
       type: String,
-      default: "password", // "password" | "google" | etc.
+      default: "password",
     },
     emailVerified: {
       type: Boolean,
@@ -60,13 +60,8 @@ const userSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // adds createdAt and updatedAt automatically
+    timestamps: true,
   }
 );
-
-// Optional: nice virtual for full name
-userSchema.virtual("fullName").get(function () {
-  return [this.firstName, this.lastName].filter(Boolean).join(" ") || this.displayName || this.username;
-});
 
 module.exports = mongoose.model("User", userSchema);
