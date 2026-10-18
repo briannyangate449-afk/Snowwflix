@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Snowwflix – Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --card: #161616;
+      --card-hover: #1c1c1c;
+      --text: #ffffff;
+      --text-muted: #a1a1aa;
+      --red: #ef4444;
+      --red-dark: #dc2626;
+      --border: rgba(255,255,255,0.08);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      overflow-x: hidden;
+      padding-bottom: calc(80px + var(--safe-bottom));
+    }
+
+    /* ========== HEADER ========== */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px 10px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+      padding: 4px;
+      line-height: 1;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.35rem;
+      letter-spacing: -0.5px;
+    }
+
+    .logo .snowflake {
+      font-size: 1.2rem;
+      color: #60a5fa;
+    }
+
+    .logo .snoww { color: white; }
+    .logo .flix { color: var(--red); }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+    }
+
+    /* ========== MAIN CONTENT ========== */
+    .content {
+      padding: 8px 16px 24px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* Hero Trailer Card */
+    .hero-card {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      height: 220px;
+      margin-bottom: 16px;
+      background: #1a1a1a;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .hero-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px;
+    }
+
+    .hero-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .hero-meta {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .play-btn {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--red);
+      border: none;
+      color: white;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(239,68,68,0.5);
+      transition: transform 0.15s, background 0.15s;
+    }
+
+    .play-btn:active {
+      transform: scale(0.92);
+      background: var(--red-dark);
+    }
+
+    /* Two Cards Row */
+    .cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .feature-card {
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--card);
+      min-height: 180px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.15s;
+      border: 1px solid var(--border);
+    }
+
+    .feature-card:active {
+      transform: scale(0.97);
+    }
+
+    .feature-card .card-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.7;
+    }
+
+    .feature-card .card-content {
+      position: relative;
+      z-index: 2;
+      padding: 16px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feature-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .feature-card p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    /* Ratings badges */
+    .ratings-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .badge.s { background: #ef4444; }
+    .badge.a { background: #22c55e; font-size: 0.95rem; }
+    .badge.b { background: #3b82f6; font-size: 0.95rem; }
+
+    .badge small {
+      font-size: 0.7rem;
+      margin-left: 1px;
+    }
+
+    /* Blogs card background */
+    .blogs-card .card-bg {
+      background-image: url('https://images.unsplash.com/photo-1483728642383-6c2a9a5c2c2c?w=600&q=80');
+      /* fallback solid if image fails */
+      background-color: #0f172a;
+    }
+
+    /* My List */
+    .my-list {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .my-list-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .my-list-header h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .my-list-header span {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .my-list-thumbs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+    }
+
+    .my-list-thumbs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .thumb {
+      flex-shrink: 0;
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: #222;
+    }
+
+    /* ========== BOTTOM NAV ========== */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(18,18,18,0.95);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0 calc(10px + var(--safe-bottom));
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      text-decoration: none;
+      color: #71717a;
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 4px 12px;
+      transition: color 0.15s;
+    }
+
+    .nav-item svg,
+    .nav-item .icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .nav-item.active {
+      color: var(--red);
+    }
+
+    .nav-item.active .icon-home {
+      color: var(--red);
+    }
+
+    /* Small decorative snowflakes on ratings card */
+    .snowflake-deco {
+      position: absolute;
+      color: rgba(255,255,255,0.15);
+      font-size: 14px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <button class="menu-btn" aria-label="Menu">☰</button>
+    
+    <a href="home.html" class="logo">
+      <span class="snowflake">❄</span>
+      <span class="snoww">Snoww</span><span class="flix">flix</span>
+    </a>
+    
+    <img 
+      src="https://i.pravatar.cc/100?img=12" 
+      alt="Profile" 
+      class="avatar" 
+      id="profile-avatar"
+      onclick="location.href='profile.html'"
+    />
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+
+    <!-- Hero Trailer Card -->
+    <div class="hero-card" onclick="alert('Open Trailers section – connect to your existing trailer logic')">
+      <img 
+        src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&q=80" 
+        alt="Snowy mountains" 
+      />
+      <div class="hero-overlay">
+        <div class="hero-title">Snowwflix Trailers</div>
+        <div class="hero-meta">New • Winter Releases</div>
+      </div>
+      <button class="play-btn" aria-label="Play">▶</button>
+    </div>
+
+    <!-- Two Feature Cards -->
+    <div class="cards-row">
+      <!-- Snoww Ratings -->
+      <div class="feature-card" onclick="location.href='ratings.html'">
+        <div class="card-bg" style="background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);"></div>
+        <div class="card-content">
+          <h3>Snoww Ratings</h3>
+          <p>Explore • Community Scores</p>
+          
+          <div class="ratings-badges">
+            <div class="badge s">S</div>
+            <div class="badge a">A<small>★</small></div>
+            <div class="badge b">B+</div>
+          </div>
+        </div>
+        <!-- decorative snowflakes -->
+        <span class="snowflake-deco" style="top:12px;left:12px;">❄</span>
+        <span class="snowflake-deco" style="top:40px;right:16px;">❄</span>
+        <span class="snowflake-deco" style="bottom:50px;left:20px;">❄</span>
+      </div>
+
+      <!-- Blogs -->
+      <div class="feature-card blogs-card" onclick="location.href='blogs.html'">
+        <div class="card-bg" style="background-image: url('https://images.unsplash.com/photo-1542601098-3adb5b3b966f?w=600&q=80');"></div>
+        <div class="card-content" style="background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);">
+          <h3>Blogs</h3>
+          <p>Guides • Winter Stories</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- My List -->
+    <div class="my-list">
+      <div class="my-list-header">
+        <span style="font-size:1.1rem;">❄</span>
+        <div>
+          <h3>My List</h3>
+          <span>Saved • 12 titles</span>
+        </div>
+      </div>
+      <div class="my-list-thumbs">
+        <img class="thumb" src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=200&q=80" alt="" />
+        <img class="thumb" src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=200&q=80" alt="" />
+        <img class="thumb" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&q=80" alt="" />
+        <img class="thumb" src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=200&q=80" alt="" />
+        <img class="thumb" src="https://images.unsplash.com/photo-1483728642383-6c2a9a5c2c2c?w=200&q=80" alt="" />
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav">
+    <a href="home.html" class="nav-item active">
+      <span class="icon icon-home">🏠</span>
+      <span>Home</span>
+    </a>
+    <a href="ratings.html" class="nav-item">
+      <span class="icon">❄</span>
+      <span>S Rating</span>
+    </a>
+    <a href="blogs.html" class="nav-item">
+      <span class="icon">📄</span>
+      <span>Blogs</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="icon">👤</span>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <script>
+    // Simple active state (already set on Home)
+    // Later you can enhance this with more logic
+
+    // Optional: make the whole hero card clickable without the button interfering
+    document.querySelector('.play-btn').addEventListener('click', function(e) {
+      e.stopPropagation();
+      alert('Play trailer – plug in your existing YouTube / trailer player here');
+    });
+  </script>
+</body>
+</html>
