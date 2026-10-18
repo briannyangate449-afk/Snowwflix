@@ -3,320 +3,79 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <title>Snowwflix</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Your existing styles -->
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="css/settings.css" />
+
+  <!-- New Layout CSS -->
   <link rel="stylesheet" href="css/new-layout.css" />
+
   <meta name="color-scheme" content="dark" />
 
-  <style>
-    /* ===== NEW LAYOUT STYLES (override / addition) ===== */
-    :root {
-      --new-bg: #0a0a0f;
-      --new-card: #15151d;
-      --new-red: #e50914;
-      --new-muted: #a0a0b0;
-      --new-border: rgba(255,255,255,0.08);
-    }
+  <!-- Theme flash prevention -->
+  <script>
+    (function () {
+      try {
+        var raw = localStorage.getItem("snowwflix_settings");
+        var theme = "system";
+        var userSet = false;
+        if (raw) {
+          var s = JSON.parse(raw);
+          theme = s.theme || "system";
+          userSet = !!s.themeUserSet;
+        }
+        var resolved = theme;
+        if (theme === "system" || !userSet) {
+          resolved = (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "blue";
+        }
+        if (resolved !== "light" && resolved !== "red" && resolved !== "blue") resolved = "blue";
+        document.documentElement.classList.add("theme-" + resolved);
+        document.documentElement.style.colorScheme = resolved === "light" ? "light" : "dark";
+      } catch (e) {}
+    })();
+  </script>
 
-    body {
-      background: var(--new-bg) !important;
-      padding-bottom: 75px !important;
-    }
-
-    /* Hide original navbar when using new layout */
-    .navbar { display: none !important; }
-
-    /* New Topbar */
-    .new-topbar {
-      position: sticky;
-      top: 0;
-      z-index: 200;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      background: rgba(10,10,15,0.95);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--new-border);
-    }
-    .new-logo {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 800;
-      font-size: 1.3rem;
-      text-decoration: none;
-      color: white;
-    }
-    .new-logo .flix { color: var(--new-red); }
-    .new-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid rgba(255,255,255,0.15);
-      cursor: pointer;
-    }
-
-    /* New Home Container */
-    .new-container {
-      max-width: 480px;
-      margin: 0 auto;
-      padding: 16px 16px 30px;
-    }
-
-    /* Hero card */
-    .new-hero {
-      position: relative;
-      border-radius: 20px;
-      overflow: hidden;
-      height: 210px;
-      margin-bottom: 16px;
-      cursor: pointer;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.45);
-    }
-    .new-hero img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .new-hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.85) 10%, transparent 70%);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 18px;
-    }
-    .new-hero-title { font-size: 1.4rem; font-weight: 800; }
-    .new-hero-sub { font-size: 0.85rem; color: #ccc; margin-top: 2px; }
-    .new-play {
-      position: absolute;
-      right: 16px;
-      bottom: 16px;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: var(--new-red);
-      border: none;
-      color: white;
-      font-size: 20px;
-      display: grid;
-      place-items: center;
-      box-shadow: 0 4px 18px rgba(229,9,20,0.55);
-    }
-
-    /* Two feature cards */
-    .new-cards {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 22px;
-    }
-    .new-feature {
-      position: relative;
-      border-radius: 18px;
-      overflow: hidden;
-      height: 175px;
-      cursor: pointer;
-      background: var(--new-card);
-    }
-    .new-feature img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.5;
-    }
-    .new-feature-content {
-      position: absolute;
-      inset: 0;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .new-feature-title { font-size: 1.05rem; font-weight: 700; }
-    .new-feature-sub { font-size: 0.75rem; color: #bbb; }
-    .new-badges { display: flex; gap: 8px; margin-top: 8px; }
-    .new-badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 11px;
-      display: grid;
-      place-items: center;
-      font-weight: 800;
-      font-size: 0.95rem;
-      color: white;
-    }
-    .badge-s { background: #e50914; }
-    .badge-a { background: #22c55e; }
-    .badge-b { background: #3b82f6; }
-
-    /* My List */
-    .new-section-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
-    }
-    .new-section-sub { font-size: 0.8rem; color: var(--new-muted); margin-bottom: 12px; }
-    .new-mylist {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding-bottom: 6px;
-      scrollbar-width: none;
-    }
-    .new-mylist::-webkit-scrollbar { display: none; }
-    .new-thumb {
-      flex: 0 0 110px;
-      height: 70px;
-      border-radius: 12px;
-      overflow: hidden;
-      background: #222;
-    }
-    .new-thumb img { width: 100%; height: 100%; object-fit: cover; }
-
-    /* Bottom Nav */
-    .new-bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 68px;
-      background: rgba(12,12,18,0.97);
-      backdrop-filter: blur(16px);
-      border-top: 1px solid var(--new-border);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 300;
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-    .new-nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      background: none;
-      border: none;
-      color: #777;
-      font-size: 0.7rem;
-      font-weight: 500;
-      cursor: pointer;
-      padding: 6px 10px;
-    }
-    .new-nav-item.active { color: var(--new-red); }
-    .new-nav-item svg { width: 24px; height: 24px; }
-
-    /* Page sections */
-    .new-page { display: none; padding: 16px 16px 40px; max-width: 480px; margin: 0 auto; }
-    .new-page.active { display: block; animation: fadeIn 0.25s ease; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: none; }
-    }
-
-    /* Forms & lists for Ratings / Blogs */
-    .new-form {
-      background: var(--new-card);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-    .new-form input,
-    .new-form textarea,
-    .new-form select {
-      width: 100%;
-      background: #0f0f16;
-      border: 1px solid var(--new-border);
-      border-radius: 10px;
-      padding: 12px;
-      color: white;
-      font-size: 0.95rem;
-      margin-bottom: 10px;
-      font-family: inherit;
-    }
-    .new-form button {
-      width: 100%;
-      background: var(--new-red);
-      color: white;
-      border: none;
-      padding: 13px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-
-    .rating-item, .blog-card {
-      background: var(--new-card);
-      border-radius: 16px;
-      margin-bottom: 12px;
-      overflow: hidden;
-    }
-    .rating-item {
-      display: flex;
-      gap: 14px;
-      padding: 14px;
-      align-items: center;
-    }
-    .rating-item img {
-      width: 65px;
-      height: 95px;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-    .blog-card img {
-      width: 100%;
-      height: 140px;
-      object-fit: cover;
-    }
-    .blog-body { padding: 14px; }
-
-    /* Trailers view (original content) */
-    #trailers-view {
-      display: none;
-    }
-    #trailers-view.active {
-      display: block;
-    }
-
-    /* Make original rows work inside the new layout */
-    #trailers-view .rows {
-      padding: 0 12px 40px;
-    }
-
-    @media (min-width: 600px) {
-      .new-container, .new-page { max-width: 520px; }
-      .new-hero { height: 250px; }
-    }
-  </style>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 </head>
-<body class="theme-blue">
 
-  <!-- NEW TOPBAR -->
-  <header class="new-topbar">
-    <button class="menu-btn" style="background:none;border:none;color:white;font-size:22px;cursor:pointer" onclick="document.getElementById('side-menu')?.classList.toggle('open')">☰</button>
-    <a href="#" class="new-logo" onclick="showNewPage('home'); return false;">
-      ❄️ <span>Snoww</span><span class="flix">flix</span>
+<body class="theme-blue" id="top">
+
+  <!-- ===================== NEW TOP BAR ===================== -->
+  <header class="new-topbar" id="new-topbar">
+    <button class="menu-btn" style="background:none;border:none;color:white;font-size:22px;cursor:pointer;padding:4px"
+            onclick="document.getElementById('menu-toggle')?.click()">
+      ☰
+    </button>
+
+    <a href="#" class="new-logo" onclick="showHome(); return false;">
+      ❄️ Snoww<span class="flix">flix</span>
     </a>
-    <img id="nav-avatar-new" src="https://placehold.co/40x40/333/ffffff?text=?" class="new-avatar" onclick="showNewPage('profile')">
+
+    <img id="nav-avatar-new"
+         src="https://placehold.co/40x40/333/ffffff?text=?"
+         class="new-avatar"
+         alt="Profile"
+         onclick="document.getElementById('profile-chip')?.click()">
   </header>
 
-  <!-- ========== HOME (Mockup) ========== -->
-  <div id="home" class="new-page active">
+  <!-- ===================== NEW HOME SCREEN ===================== -->
+  <div id="new-home" class="active">
     <div class="new-container">
-      <!-- Big Trailers Card → opens original trailers -->
-      <div class="new-hero" onclick="showTrailers()">
-        <img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=900&q=80" alt="Snowy mountains">
+
+      <!-- Big Trailers Card -->
+      <div class="new-hero" onclick="openTrailers()">
+        <img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=900&q=80" alt="Snowwflix Trailers">
         <div class="new-hero-overlay">
           <div class="new-hero-title">Snowwflix Trailers</div>
           <div class="new-hero-sub">New • Winter Releases</div>
@@ -324,7 +83,7 @@
         <button class="new-play">▶</button>
       </div>
 
-      <!-- Ratings + Blogs -->
+      <!-- Ratings + Blogs Cards -->
       <div class="new-cards">
         <div class="new-feature" onclick="showNewPage('ratings')">
           <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80" alt="">
@@ -352,21 +111,20 @@
         </div>
       </div>
 
-      <!-- My List preview -->
+      <!-- My List -->
       <div class="new-section-title">❄️ My List</div>
       <div class="new-section-sub">Saved titles</div>
       <div class="new-mylist" id="new-mylist-preview">
-        <!-- Will be filled by JS if you have saved items -->
-        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300&q=80"></div>
-        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=300&q=80"></div>
-        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=300&q=80"></div>
+        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300&q=80" alt=""></div>
+        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=300&q=80" alt=""></div>
+        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=300&q=80" alt=""></div>
       </div>
     </div>
   </div>
 
-  <!-- ========== TRAILERS (Original experience) ========== -->
-  <div id="trailers-view">
-    <!-- Keep your original main content here -->
+  <!-- ===================== ORIGINAL TRAILERS CONTENT ===================== -->
+  <div id="trailers-view" style="display:none;">
+    <!-- Keep the original main structure so app.js still works -->
     <main>
       <section class="hero" id="hero">
         <div class="hero-poster" id="hero-poster">
@@ -376,16 +134,17 @@
             <h1 id="hero-title">Loading featured titles…</h1>
             <p class="hero-meta" id="hero-meta">Curated trailers · Watch in one tap</p>
             <div class="hero-actions">
-              <button class="primary-btn hero-cta" id="hero-watch">▶ Watch Trailer</button>
-              <button class="ghost-btn hero-cta" id="hero-prev">◀</button>
-              <button class="ghost-btn hero-cta" id="hero-next">▶</button>
+              <button class="primary-btn hero-cta" id="hero-watch"><span>▶ Watch Trailer</span></button>
+              <button class="ghost-btn hero-cta" id="hero-prev" type="button">◀</button>
+              <button class="ghost-btn hero-cta" id="hero-next" type="button">▶</button>
             </div>
             <div class="hero-dots" id="hero-dots"></div>
           </div>
+          <div class="hero-cards-rail" id="hero-cards-rail" aria-hidden="true"></div>
         </div>
       </section>
 
-      <nav class="category-nav" id="category-nav">
+      <nav class="category-nav" id="category-nav" aria-label="Categories">
         <button type="button" class="cat-chip active" data-cat="trending">🔥 Trending</button>
         <button type="button" class="cat-chip" data-cat="top50">🏆 Top 50</button>
         <button type="button" class="cat-chip" data-cat="thriller">Thriller</button>
@@ -393,29 +152,78 @@
         <button type="button" class="cat-chip" data-cat="animation">Animation</button>
         <button type="button" class="cat-chip" data-cat="romance">Romance</button>
         <button type="button" class="cat-chip" data-cat="drama">Drama</button>
+        <button type="button" class="cat-chip" data-cat="watch">📺 Where to Watch</button>
       </nav>
 
       <section class="rows" id="content-rows">
-        <!-- Your existing rows will be filled by app.js -->
+        <div class="row-block hidden" data-row="search-results" id="search-results-block">
+          <div class="row-header"><h2 id="search-results-title">🔍 Search results</h2>
+            <button type="button" class="row-more" id="clear-search-results">Clear</button>
+          </div>
+          <div class="row-scroller movie-grid" id="row-search-results"></div>
+        </div>
+
         <div class="row-block" data-row="trending">
-          <div class="row-header"><h2>🔥 Trending</h2></div>
+          <div class="row-header"><h2>🔥 Trending</h2>
+            <button type="button" class="row-more" data-cat="trending">See all</button>
+          </div>
           <div class="row-scroller movie-grid" id="row-trending"></div>
         </div>
+
         <div class="row-block" data-row="top50">
-          <div class="row-header"><h2>🏆 Top 50 Trailers</h2></div>
+          <div class="row-header"><h2>🏆 Top 50 Trailers</h2>
+            <button type="button" class="row-more" data-cat="top50">See all</button>
+          </div>
+          <p class="row-sub">Highest-rated trailers · IMDb & Rotten Tomatoes style scores</p>
           <div class="row-scroller movie-grid" id="row-top50"></div>
         </div>
-        <!-- Add other genre rows the same way if needed -->
+
+        <div class="row-block" data-row="thriller">
+          <div class="row-header"><h2>Thriller</h2>
+            <button type="button" class="row-more" data-cat="thriller">See all</button>
+          </div>
+          <div class="row-scroller movie-grid" id="row-thriller"></div>
+        </div>
+
+        <div class="row-block" data-row="horror">
+          <div class="row-header"><h2>Horror</h2>
+            <button type="button" class="row-more" data-cat="horror">See all</button>
+          </div>
+          <div class="row-scroller movie-grid" id="row-horror"></div>
+        </div>
+
+        <div class="row-block" data-row="animation">
+          <div class="row-header"><h2>Animation</h2>
+            <button type="button" class="row-more" data-cat="animation">See all</button>
+          </div>
+          <div class="row-scroller movie-grid" id="row-animation"></div>
+        </div>
+
+        <div class="row-block" data-row="romance">
+          <div class="row-header"><h2>Romance</h2>
+            <button type="button" class="row-more" data-cat="romance">See all</button>
+          </div>
+          <div class="row-scroller movie-grid" id="row-romance"></div>
+        </div>
+
+        <div class="row-block" data-row="drama">
+          <div class="row-header"><h2>Drama</h2>
+            <button type="button" class="row-more" data-cat="drama">See all</button>
+          </div>
+          <div class="row-scroller movie-grid" id="row-drama"></div>
+        </div>
       </section>
+
+      <div id="movie-grid" class="movie-grid hidden" aria-hidden="true"></div>
     </main>
   </div>
 
-  <!-- ========== S RATING ========== -->
-  <div id="ratings" class="new-page">
-    <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:6px">Snoww Ratings</h2>
-    <p style="color:var(--new-muted);margin-bottom:20px">Community scores • S / A★ / B+</p>
+  <!-- ===================== RATINGS PAGE ===================== -->
+  <div id="ratings-page" class="new-page" style="display:none; max-width:480px; margin:0 auto; padding:16px;">
+    <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:6px;">Snoww Ratings</h2>
+    <p style="color:#a0a0b0;margin-bottom:20px;">Community scores • S / A★ / B+</p>
 
-    <div class="new-form" id="rating-form-wrap">
+    <div class="new-form">
       <input type="text" id="rating-title" placeholder="Movie / Trailer title">
       <select id="rating-grade">
         <option value="S">S — Masterpiece</option>
@@ -431,12 +239,12 @@
     <div id="ratings-list"></div>
   </div>
 
-  <!-- ========== BLOGS ========== -->
-  <div id="blogs" class="new-page">
-    <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:6px">Blogs</h2>
-    <p style="color:var(--new-muted);margin-bottom:20px">Guides • Winter Stories</p>
+  <!-- ===================== BLOGS PAGE ===================== -->
+  <div id="blogs-page" class="new-page" style="display:none; max-width:480px; margin:0 auto; padding:16px;">
+    <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:6px;">Blogs</h2>
+    <p style="color:#a0a0b0;margin-bottom:20px;">Guides • Winter Stories</p>
 
-    <div class="new-form" id="blog-form-wrap">
+    <div class="new-form">
       <input type="text" id="blog-title" placeholder="Blog title">
       <input type="text" id="blog-image" placeholder="Cover image URL (optional)">
       <textarea id="blog-content" rows="4" placeholder="Write your post..."></textarea>
@@ -446,61 +254,43 @@
     <div id="blogs-list"></div>
   </div>
 
-  <!-- ========== PROFILE ========== -->
-  <div id="profile" class="new-page">
-    <div style="text-align:center;margin-bottom:28px">
-      <img id="profile-avatar" src="https://placehold.co/100x100/333/ffffff?text=?" style="width:90px;height:90px;border-radius:50%;border:3px solid rgba(255,255,255,0.1);margin-bottom:12px">
-      <h2 id="profile-name" style="font-size:1.3rem">Guest</h2>
-      <p id="profile-email" style="color:var(--new-muted)"></p>
-    </div>
-
-    <div id="profile-logged-out" class="new-form" style="text-align:center">
-      <p style="margin-bottom:16px;color:var(--new-muted)">Sign in to save ratings, blogs and your list</p>
-      <button onclick="document.getElementById('signin-open')?.click()" style="background:var(--new-red);color:white;border:none;padding:13px;border-radius:12px;font-weight:700;width:100%;cursor:pointer">
-        Login / Sign Up
-      </button>
-    </div>
-
-    <div id="profile-logged-in" class="new-form" style="display:none">
-      <button onclick="doSignOut()" style="background:#333;color:white;border:none;padding:13px;border-radius:12px;font-weight:700;width:100%;cursor:pointer;margin-top:10px">
-        Sign Out
-      </button>
-    </div>
-  </div>
-
-  <!-- BOTTOM NAV -->
+  <!-- ===================== FIXED BOTTOM NAV ===================== -->
   <nav class="new-bottom-nav">
-    <button class="new-nav-item active" data-page="home" onclick="showNewPage('home')">
+    <button class="new-nav-item active" data-page="home" onclick="showHome()">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
       Home
     </button>
     <button class="new-nav-item" data-page="ratings" onclick="showNewPage('ratings')">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L13.09 8.26L19 7L14.74 11.26L21 12L14.74 12.74L19 17L13.09 15.74L12 22L10.91 15.74L5 17L9.26 12.74L3 12L9.26 11.26L5 7L10.91 8.26L12 2Z"/></svg>
       S Rating
     </button>
     <button class="new-nav-item" data-page="blogs" onclick="showNewPage('blogs')">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
       Blogs
     </button>
-    <button class="new-nav-item" data-page="profile" onclick="showNewPage('profile')">
+    <button class="new-nav-item" data-page="profile" onclick="document.getElementById('profile-chip')?.click()">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
       Profile
     </button>
   </nav>
 
-  <!-- ===== KEEP YOUR ORIGINAL MODALS & SIDE MENU ===== -->
-  <!-- (Copy the side-menu, auth modal, settings modal from your current index.html here) -->
-  <!-- For brevity I am not pasting the full original modals again. -->
-  <!-- Just keep the existing side-menu, auth modal and settings modal code. -->
+  <!-- ===================== KEEP YOUR ORIGINAL SIDE MENU + AUTH MODAL + SETTINGS ===================== -->
+  <!-- IMPORTANT: Copy your existing side-menu, auth modal, and settings modal from the old index.html and paste them here -->
+  <!-- They must stay so login, settings, privacy etc. continue working -->
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <!-- Example placeholder (replace with your real modals) -->
+  <div id="side-menu" class="side-menu">
+    <!-- Your existing side menu content -->
+  </div>
 
+  <!-- Your existing auth modal should be here -->
+  <!-- Your existing settings modal should be here -->
+
+  <!-- Toast -->
+  <div id="toast-wrap" style="position:fixed;right:1rem;bottom:90px;z-index:1000"></div>
+
+  <!-- ===================== FIREBASE INIT ===================== -->
   <script>
-    // === Your existing Firebase config ===
     const firebaseConfig = {
       apiKey: "AIzaSyCBjGfxzkCw9DVSfYIqWzrBkGwtAkfgd18",
       authDomain: "trailers-7ffca.firebaseapp.com",
@@ -516,45 +306,62 @@
     const db = firebase.firestore();
     window.auth = auth;
     window.db = db;
+  </script>
 
-    // ===== NEW LAYOUT LOGIC =====
-    function showNewPage(page) {
-      // Hide all new pages + trailers
-      document.querySelectorAll('.new-page').forEach(el => el.classList.remove('active'));
-      document.getElementById('trailers-view').classList.remove('active');
+  <!-- ===================== NEW LAYOUT JAVASCRIPT ===================== -->
+  <script>
+    // ========== VIEW SWITCHING ==========
+    function showHome() {
+      document.getElementById('new-home').style.display = 'block';
       document.getElementById('trailers-view').style.display = 'none';
+      document.getElementById('ratings-page').style.display = 'none';
+      document.getElementById('blogs-page').style.display = 'none';
 
-      if (page === 'trailers') {
-        document.getElementById('trailers-view').style.display = 'block';
-        document.getElementById('trailers-view').classList.add('active');
-      } else {
-        const el = document.getElementById(page);
-        if (el) el.classList.add('active');
+      document.querySelectorAll('.new-nav-item').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.page === 'home');
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openTrailers() {
+      document.getElementById('new-home').style.display = 'none';
+      document.getElementById('trailers-view').style.display = 'block';
+      document.getElementById('ratings-page').style.display = 'none';
+      document.getElementById('blogs-page').style.display = 'none';
+
+      document.querySelectorAll('.new-nav-item').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showNewPage(page) {
+      document.getElementById('new-home').style.display = 'none';
+      document.getElementById('trailers-view').style.display = 'none';
+      document.getElementById('ratings-page').style.display = 'none';
+      document.getElementById('blogs-page').style.display = 'none';
+
+      if (page === 'ratings') {
+        document.getElementById('ratings-page').style.display = 'block';
+        loadRatings();
+      }
+      if (page === 'blogs') {
+        document.getElementById('blogs-page').style.display = 'block';
+        loadBlogs();
       }
 
-      // Update bottom nav
       document.querySelectorAll('.new-nav-item').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.page === page);
       });
-
       window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      // Load data when opening pages
-      if (page === 'ratings') loadRatings();
-      if (page === 'blogs') loadBlogs();
-      if (page === 'profile') updateProfileUI();
     }
 
-    function showTrailers() {
-      showNewPage('trailers');
-    }
-
-    // ===== RATINGS (Firestore) =====
+    // ========== RATINGS (Firestore) ==========
     async function submitRating() {
       const user = auth.currentUser;
       if (!user) {
         alert('Please login first to add a rating');
-        showNewPage('profile');
+        document.getElementById('profile-chip')?.click();
         return;
       }
 
@@ -562,7 +369,7 @@
       const grade = document.getElementById('rating-grade').value;
       const comment = document.getElementById('rating-comment').value.trim();
 
-      if (!title) return alert('Enter a title');
+      if (!title) return alert('Please enter a title');
 
       try {
         await db.collection('ratings').add({
@@ -576,50 +383,53 @@
         document.getElementById('rating-title').value = '';
         document.getElementById('rating-comment').value = '';
         loadRatings();
-        alert('Rating saved!');
+        alert('Rating saved successfully!');
       } catch (err) {
         console.error(err);
-        alert('Could not save rating');
+        alert('Failed to save rating. Check console.');
       }
     }
 
     async function loadRatings() {
       const list = document.getElementById('ratings-list');
-      list.innerHTML = '<p style="color:#888">Loading...</p>';
+      list.innerHTML = '<p style="color:#888;padding:20px 0;">Loading ratings...</p>';
 
       try {
-        const snap = await db.collection('ratings').orderBy('createdAt', 'desc').limit(30).get();
+        const snap = await db.collection('ratings').orderBy('createdAt', 'desc').limit(40).get();
         list.innerHTML = '';
+
         if (snap.empty) {
-          list.innerHTML = '<p style="color:#888">No ratings yet. Be the first!</p>';
+          list.innerHTML = '<p style="color:#888;">No ratings yet. Be the first!</p>';
           return;
         }
+
         snap.forEach(doc => {
           const d = doc.data();
-          const badgeClass = d.grade === 'S' ? 'badge-s' : d.grade.includes('A') ? 'badge-a' : 'badge-b';
+          const badgeClass = d.grade === 'S' ? 'badge-s' : (d.grade.includes('A') ? 'badge-a' : 'badge-b');
           list.innerHTML += `
-            <div class="rating-item">
-              <div style="flex:1">
-                <h3 style="margin:0 0 4px">${d.title}</h3>
-                <p style="margin:0 0 8px;color:#aaa;font-size:0.85rem">${d.comment || ''}</p>
-                <div style="display:flex;align-items:center;gap:10px">
-                  <div class="new-badge \( {badgeClass}" style="width:36px;height:36px;font-size:0.85rem"> \){d.grade}</div>
-                  <span style="font-size:0.75rem;color:#777">${d.userName || 'User'}</span>
+            <div class="rating-item" style="background:#15151d;border-radius:16px;padding:14px;margin-bottom:12px;display:flex;gap:14px;align-items:center;">
+              <div style="flex:1;">
+                <h3 style="margin:0 0 4px;font-size:1rem;">${d.title}</h3>
+                <p style="margin:0 0 8px;color:#aaa;font-size:0.85rem;">${d.comment || ''}</p>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div class="new-badge \( {badgeClass}" style="width:36px;height:36px;font-size:0.85rem;"> \){d.grade}</div>
+                  <span style="font-size:0.75rem;color:#777;">${d.userName || 'User'}</span>
                 </div>
               </div>
             </div>`;
         });
       } catch (err) {
-        list.innerHTML = '<p style="color:#f66">Error loading ratings</p>';
+        console.error(err);
+        list.innerHTML = '<p style="color:#f66;">Error loading ratings</p>';
       }
     }
 
-    // ===== BLOGS (Firestore) =====
+    // ========== BLOGS (Firestore) ==========
     async function submitBlog() {
       const user = auth.currentUser;
       if (!user) {
         alert('Please login first to publish a blog');
-        showNewPage('profile');
+        document.getElementById('profile-chip')?.click();
         return;
       }
 
@@ -627,7 +437,7 @@
       const image = document.getElementById('blog-image').value.trim() || 'https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=800&q=80';
       const content = document.getElementById('blog-content').value.trim();
 
-      if (!title || !content) return alert('Title and content required');
+      if (!title || !content) return alert('Title and content are required');
 
       try {
         await db.collection('blogs').add({
@@ -645,93 +455,54 @@
         alert('Blog published!');
       } catch (err) {
         console.error(err);
-        alert('Could not publish blog');
+        alert('Failed to publish blog');
       }
     }
 
     async function loadBlogs() {
       const list = document.getElementById('blogs-list');
-      list.innerHTML = '<p style="color:#888">Loading...</p>';
+      list.innerHTML = '<p style="color:#888;padding:20px 0;">Loading blogs...</p>';
 
       try {
         const snap = await db.collection('blogs').orderBy('createdAt', 'desc').limit(20).get();
         list.innerHTML = '';
+
         if (snap.empty) {
-          list.innerHTML = '<p style="color:#888">No blogs yet.</p>';
+          list.innerHTML = '<p style="color:#888;">No blogs yet.</p>';
           return;
         }
+
         snap.forEach(doc => {
           const d = doc.data();
           const date = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString() : 'Just now';
           list.innerHTML += `
-            <div class="blog-card">
-              <img src="${d.image}" alt="">
-              <div class="blog-body">
-                <h3 style="margin:0 0 6px">${d.title}</h3>
-                <p style="margin:0 0 10px;color:#aaa;font-size:0.9rem;line-height:1.4">\( {d.content.substring(0, 140)} \){d.content.length > 140 ? '...' : ''}</p>
-                <div style="font-size:0.75rem;color:#777">${d.userName} • ${date}</div>
+            <div class="blog-card" style="background:#15151d;border-radius:16px;overflow:hidden;margin-bottom:16px;">
+              <img src="${d.image}" style="width:100%;height:140px;object-fit:cover;" alt="">
+              <div style="padding:14px;">
+                <h3 style="margin:0 0 6px;font-size:1.05rem;">${d.title}</h3>
+                <p style="margin:0 0 10px;color:#aaa;font-size:0.9rem;line-height:1.4;">\( {d.content.substring(0, 160)} \){d.content.length > 160 ? '...' : ''}</p>
+                <div style="font-size:0.75rem;color:#777;">${d.userName} • ${date}</div>
               </div>
             </div>`;
         });
       } catch (err) {
-        list.innerHTML = '<p style="color:#f66">Error loading blogs</p>';
+        console.error(err);
+        list.innerHTML = '<p style="color:#f66;">Error loading blogs</p>';
       }
     }
 
-    // ===== PROFILE =====
-    function updateProfileUI() {
-      const user = auth.currentUser;
-      const avatar = document.getElementById('profile-avatar');
-      const nameEl = document.getElementById('profile-name');
-      const emailEl = document.getElementById('profile-email');
-      const loggedOut = document.getElementById('profile-logged-out');
-      const loggedIn = document.getElementById('profile-logged-in');
-      const navAvatar = document.getElementById('nav-avatar-new');
-
-      if (user) {
-        nameEl.textContent = user.displayName || 'User';
-        emailEl.textContent = user.email || '';
-        if (user.photoURL) {
-          avatar.src = user.photoURL;
-          navAvatar.src = user.photoURL;
-        }
-        loggedOut.style.display = 'none';
-        loggedIn.style.display = 'block';
-      } else {
-        nameEl.textContent = 'Guest';
-        emailEl.textContent = '';
-        avatar.src = 'https://placehold.co/100x100/333/ffffff?text=?';
-        navAvatar.src = 'https://placehold.co/40x40/333/ffffff?text=?';
-        loggedOut.style.display = 'block';
-        loggedIn.style.display = 'none';
-      }
-    }
-
-    async function doSignOut() {
-      try {
-        await auth.signOut();
-        updateProfileUI();
-        alert('Signed out');
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    // Listen for auth changes
-    auth.onAuthStateChanged(user => {
-      updateProfileUI();
+    // Start on Home
+    document.addEventListener('DOMContentLoaded', () => {
+      showHome();
     });
-
-    // Load ratings & blogs on start (optional)
-    // loadRatings(); loadBlogs();
   </script>
 
-  <!-- Your existing scripts -->
+  <!-- Your existing scripts (keep these) -->
   <script src="https://www.youtube.com/iframe_api"></script>
   <script src="app.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/settings.js"></script>
-  <!-- Add other scripts you already have -->
+  <!-- Add other scripts you already use (i18n.js etc.) -->
 
 </body>
 </html>
