@@ -10,16 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Your existing styles -->
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="css/settings.css" />
-
-  <!-- New Layout CSS -->
   <link rel="stylesheet" href="css/new-layout.css" />
 
   <meta name="color-scheme" content="dark" />
 
-  <!-- Theme flash prevention -->
   <script>
     (function () {
       try {
@@ -42,7 +38,6 @@
     })();
   </script>
 
-  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -51,31 +46,24 @@
 
 <body class="theme-blue" id="top">
 
-  <!-- ===================== NEW TOP BAR ===================== -->
+  <!-- ========== NEW TOP BAR ========== -->
   <header class="new-topbar" id="new-topbar">
-    <button class="menu-btn" style="background:none;border:none;color:white;font-size:22px;cursor:pointer;padding:4px"
-            onclick="document.getElementById('menu-toggle')?.click()">
-      ☰
-    </button>
+    <button style="background:none;border:none;color:white;font-size:22px;cursor:pointer;padding:4px"
+            onclick="document.getElementById('menu-toggle')?.click()">☰</button>
 
     <a href="#" class="new-logo" onclick="showHome(); return false;">
       ❄️ Snoww<span class="flix">flix</span>
     </a>
 
-    <img id="nav-avatar-new"
-         src="https://placehold.co/40x40/333/ffffff?text=?"
-         class="new-avatar"
-         alt="Profile"
-         onclick="document.getElementById('profile-chip')?.click()">
+    <img id="nav-avatar-new" src="https://placehold.co/40x40/333/ffffff?text=?" class="new-avatar"
+         onclick="document.getElementById('profile-chip')?.click()" alt="Profile">
   </header>
 
-  <!-- ===================== NEW HOME SCREEN ===================== -->
-  <div id="new-home" class="active">
+  <!-- ========== NEW HOME ========== -->
+  <div id="new-home">
     <div class="new-container">
-
-      <!-- Big Trailers Card -->
       <div class="new-hero" onclick="openTrailers()">
-        <img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=900&q=80" alt="Snowwflix Trailers">
+        <img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=900&q=80" alt="Trailers">
         <div class="new-hero-overlay">
           <div class="new-hero-title">Snowwflix Trailers</div>
           <div class="new-hero-sub">New • Winter Releases</div>
@@ -83,7 +71,6 @@
         <button class="new-play">▶</button>
       </div>
 
-      <!-- Ratings + Blogs Cards -->
       <div class="new-cards">
         <div class="new-feature" onclick="showNewPage('ratings')">
           <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80" alt="">
@@ -111,20 +98,18 @@
         </div>
       </div>
 
-      <!-- My List -->
       <div class="new-section-title">❄️ My List</div>
       <div class="new-section-sub">Saved titles</div>
       <div class="new-mylist" id="new-mylist-preview">
-        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300&q=80" alt=""></div>
-        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=300&q=80" alt=""></div>
-        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=300&q=80" alt=""></div>
+        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300&q=80"></div>
+        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=300&q=80"></div>
+        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=300&q=80"></div>
       </div>
     </div>
   </div>
 
-  <!-- ===================== ORIGINAL TRAILERS CONTENT ===================== -->
+  <!-- ========== ORIGINAL TRAILERS VIEW ========== -->
   <div id="trailers-view" style="display:none;">
-    <!-- Keep the original main structure so app.js still works -->
     <main>
       <section class="hero" id="hero">
         <div class="hero-poster" id="hero-poster">
@@ -134,17 +119,17 @@
             <h1 id="hero-title">Loading featured titles…</h1>
             <p class="hero-meta" id="hero-meta">Curated trailers · Watch in one tap</p>
             <div class="hero-actions">
-              <button class="primary-btn hero-cta" id="hero-watch"><span>▶ Watch Trailer</span></button>
-              <button class="ghost-btn hero-cta" id="hero-prev" type="button">◀</button>
-              <button class="ghost-btn hero-cta" id="hero-next" type="button">▶</button>
+              <button class="primary-btn hero-cta" id="hero-watch">▶ Watch Trailer</button>
+              <button class="ghost-btn hero-cta" id="hero-prev">◀</button>
+              <button class="ghost-btn hero-cta" id="hero-next">▶</button>
             </div>
             <div class="hero-dots" id="hero-dots"></div>
           </div>
-          <div class="hero-cards-rail" id="hero-cards-rail" aria-hidden="true"></div>
+          <div class="hero-cards-rail" id="hero-cards-rail"></div>
         </div>
       </section>
 
-      <nav class="category-nav" id="category-nav" aria-label="Categories">
+      <nav class="category-nav" id="category-nav">
         <button type="button" class="cat-chip active" data-cat="trending">🔥 Trending</button>
         <button type="button" class="cat-chip" data-cat="top50">🏆 Top 50</button>
         <button type="button" class="cat-chip" data-cat="thriller">Thriller</button>
@@ -158,71 +143,47 @@
       <section class="rows" id="content-rows">
         <div class="row-block hidden" data-row="search-results" id="search-results-block">
           <div class="row-header"><h2 id="search-results-title">🔍 Search results</h2>
-            <button type="button" class="row-more" id="clear-search-results">Clear</button>
-          </div>
+            <button type="button" class="row-more" id="clear-search-results">Clear</button></div>
           <div class="row-scroller movie-grid" id="row-search-results"></div>
         </div>
-
         <div class="row-block" data-row="trending">
-          <div class="row-header"><h2>🔥 Trending</h2>
-            <button type="button" class="row-more" data-cat="trending">See all</button>
-          </div>
+          <div class="row-header"><h2>🔥 Trending</h2><button type="button" class="row-more" data-cat="trending">See all</button></div>
           <div class="row-scroller movie-grid" id="row-trending"></div>
         </div>
-
         <div class="row-block" data-row="top50">
-          <div class="row-header"><h2>🏆 Top 50 Trailers</h2>
-            <button type="button" class="row-more" data-cat="top50">See all</button>
-          </div>
-          <p class="row-sub">Highest-rated trailers · IMDb & Rotten Tomatoes style scores</p>
+          <div class="row-header"><h2>🏆 Top 50 Trailers</h2><button type="button" class="row-more" data-cat="top50">See all</button></div>
+          <p class="row-sub">Highest-rated trailers</p>
           <div class="row-scroller movie-grid" id="row-top50"></div>
         </div>
-
         <div class="row-block" data-row="thriller">
-          <div class="row-header"><h2>Thriller</h2>
-            <button type="button" class="row-more" data-cat="thriller">See all</button>
-          </div>
+          <div class="row-header"><h2>Thriller</h2><button type="button" class="row-more" data-cat="thriller">See all</button></div>
           <div class="row-scroller movie-grid" id="row-thriller"></div>
         </div>
-
         <div class="row-block" data-row="horror">
-          <div class="row-header"><h2>Horror</h2>
-            <button type="button" class="row-more" data-cat="horror">See all</button>
-          </div>
+          <div class="row-header"><h2>Horror</h2><button type="button" class="row-more" data-cat="horror">See all</button></div>
           <div class="row-scroller movie-grid" id="row-horror"></div>
         </div>
-
         <div class="row-block" data-row="animation">
-          <div class="row-header"><h2>Animation</h2>
-            <button type="button" class="row-more" data-cat="animation">See all</button>
-          </div>
+          <div class="row-header"><h2>Animation</h2><button type="button" class="row-more" data-cat="animation">See all</button></div>
           <div class="row-scroller movie-grid" id="row-animation"></div>
         </div>
-
         <div class="row-block" data-row="romance">
-          <div class="row-header"><h2>Romance</h2>
-            <button type="button" class="row-more" data-cat="romance">See all</button>
-          </div>
+          <div class="row-header"><h2>Romance</h2><button type="button" class="row-more" data-cat="romance">See all</button></div>
           <div class="row-scroller movie-grid" id="row-romance"></div>
         </div>
-
         <div class="row-block" data-row="drama">
-          <div class="row-header"><h2>Drama</h2>
-            <button type="button" class="row-more" data-cat="drama">See all</button>
-          </div>
+          <div class="row-header"><h2>Drama</h2><button type="button" class="row-more" data-cat="drama">See all</button></div>
           <div class="row-scroller movie-grid" id="row-drama"></div>
         </div>
       </section>
-
-      <div id="movie-grid" class="movie-grid hidden" aria-hidden="true"></div>
+      <div id="movie-grid" class="movie-grid hidden"></div>
     </main>
   </div>
 
-  <!-- ===================== RATINGS PAGE ===================== -->
-  <div id="ratings-page" class="new-page" style="display:none; max-width:480px; margin:0 auto; padding:16px;">
+  <!-- ========== RATINGS PAGE ========== -->
+  <div id="ratings-page" style="display:none; max-width:480px; margin:0 auto; padding:16px 16px 100px;">
     <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:6px;">Snoww Ratings</h2>
     <p style="color:#a0a0b0;margin-bottom:20px;">Community scores • S / A★ / B+</p>
-
     <div class="new-form">
       <input type="text" id="rating-title" placeholder="Movie / Trailer title">
       <select id="rating-grade">
@@ -235,26 +196,23 @@
       <textarea id="rating-comment" rows="2" placeholder="Short comment (optional)"></textarea>
       <button onclick="submitRating()">Add Rating</button>
     </div>
-
     <div id="ratings-list"></div>
   </div>
 
-  <!-- ===================== BLOGS PAGE ===================== -->
-  <div id="blogs-page" class="new-page" style="display:none; max-width:480px; margin:0 auto; padding:16px;">
+  <!-- ========== BLOGS PAGE ========== -->
+  <div id="blogs-page" style="display:none; max-width:480px; margin:0 auto; padding:16px 16px 100px;">
     <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:6px;">Blogs</h2>
     <p style="color:#a0a0b0;margin-bottom:20px;">Guides • Winter Stories</p>
-
     <div class="new-form">
       <input type="text" id="blog-title" placeholder="Blog title">
       <input type="text" id="blog-image" placeholder="Cover image URL (optional)">
       <textarea id="blog-content" rows="4" placeholder="Write your post..."></textarea>
       <button onclick="submitBlog()">Publish Blog</button>
     </div>
-
     <div id="blogs-list"></div>
   </div>
 
-  <!-- ===================== FIXED BOTTOM NAV ===================== -->
+  <!-- ========== FIXED BOTTOM NAV ========== -->
   <nav class="new-bottom-nav">
     <button class="new-nav-item active" data-page="home" onclick="showHome()">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -274,22 +232,105 @@
     </button>
   </nav>
 
-  <!-- ===================== KEEP YOUR ORIGINAL SIDE MENU + AUTH MODAL + SETTINGS ===================== -->
-  <!-- IMPORTANT: Copy your existing side-menu, auth modal, and settings modal from the old index.html and paste them here -->
-  <!-- They must stay so login, settings, privacy etc. continue working -->
-
-  <!-- Example placeholder (replace with your real modals) -->
+  <!-- ========== SIDE MENU (Original) ========== -->
   <div id="side-menu" class="side-menu">
-    <!-- Your existing side menu content -->
+    <button type="button" id="side-menu-close" class="side-menu-close" aria-label="Close menu">✕</button>
+    <div class="menu-profile">
+      <img id="menu-avatar" src="https://placehold.co/60x60" alt="Profile">
+      <h4 id="menu-display-name">Guest</h4>
+      <p id="menu-user-email" style="margin:4px 0 0;font-size:0.8rem;color:#8b949e;"></p>
+      <label class="avatar-upload-label hidden" id="avatar-upload-wrap">
+        <input type="file" id="avatar-upload" accept="image/*" hidden />
+        Change photo
+      </label>
+    </div>
+    <button id="settings-open" class="menu-item">⚙️ Settings</button>
+    <button id="premium-buy" class="menu-item">⭐ Premium</button>
+    <button id="signin-open" class="menu-item">👤 Login / Sign Up</button>
+    <button id="signout-btn" class="menu-item hidden" type="button">🚪 Log Out</button>
   </div>
 
-  <!-- Your existing auth modal should be here -->
-  <!-- Your existing settings modal should be here -->
+  <!-- Hidden original navbar elements that auth.js and app.js expect -->
+  <div style="display:none;">
+    <button id="menu-toggle"></button>
+    <button id="profile-chip"></button>
+    <img id="nav-avatar" src="https://placehold.co/40x40/333/ffffff?text=?" />
+    <span id="nav-username">Login / Sign up</span>
+    <div id="nav-auth-links">
+      <button id="nav-login-btn">Login</button>
+      <button id="nav-signup-btn">Sign Up</button>
+    </div>
+  </div>
+
+  <!-- ========== AUTH MODAL (Original structure) ========== -->
+  <div id="auth-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-surface auth-surface">
+      <button type="button" class="close-x" id="auth-close">✕</button>
+      
+      <div id="auth-login-view">
+        <h2>Login</h2>
+        <form id="login-form">
+          <input type="email" id="login-email" placeholder="Email" required />
+          <input type="password" id="login-password" placeholder="Password" required />
+          <button type="button" id="login-final" class="primary-btn">Login</button>
+          <button type="button" id="to-signup" class="ghost-btn">Don't have account? Sign up</button>
+          <button type="button" id="forgot-password" class="ghost-btn">Forgot password?</button>
+          <button type="button" id="google-signin" class="ghost-btn" style="width:100%;margin-top:0.5rem;">Sign in with Google</button>
+        </form>
+      </div>
+
+      <div id="auth-signup-view" class="hidden">
+        <h2>Sign Up</h2>
+        <form id="signup-form">
+          <input type="text" id="signup-firstname" placeholder="First name" />
+          <input type="text" id="signup-lastname" placeholder="Last name" />
+          <input type="text" id="signup-username" placeholder="Username" />
+          <input type="email" id="signup-email" placeholder="Email" required />
+          <input type="password" id="signup-password" placeholder="Password" required />
+          <button type="button" id="signup-final" class="primary-btn">Create Account</button>
+          <button type="button" id="to-login" class="ghost-btn">Already have account? Login</button>
+        </form>
+      </div>
+
+      <div id="auth-msg" style="margin-top:0.6rem;color:var(--muted)"></div>
+    </div>
+  </div>
+
+  <!-- ========== SETTINGS MODAL ========== -->
+  <div id="settings-modal" class="settings-modal hidden">
+    <div class="settings-overlay"></div>
+    <div class="settings-window">
+      <button id="close-settings" class="close-settings">✕</button>
+      <div class="settings-header">
+        <h2>⚙️ Settings</h2>
+        <p>Customize your Snowwflix experience</p>
+      </div>
+      <div class="settings-body">
+        <div class="setting-item">
+          <span>🌙 Dark Mode</span>
+          <input type="checkbox" id="darkMode">
+        </div>
+        <div class="setting-item">
+          <span>🎬 Autoplay Trailers</span>
+          <input type="checkbox" id="autoplay" checked>
+        </div>
+        <div class="setting-item">
+          <span>🔔 Notifications</span>
+          <input type="checkbox" id="notifications" checked>
+        </div>
+        <div class="setting-item">
+          <span>✨ Animations</span>
+          <input type="checkbox" id="animations" checked>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Toast -->
   <div id="toast-wrap" style="position:fixed;right:1rem;bottom:90px;z-index:1000"></div>
 
-  <!-- ===================== FIREBASE INIT ===================== -->
+  <!-- Firebase Config -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCBjGfxzkCw9DVSfYIqWzrBkGwtAkfgd18",
@@ -300,27 +341,23 @@
       appId: "1:197034717747:web:3b683557cb8f2024b0e946",
       measurementId: "G-0GDJRDEJT1"
     };
-
     const app = firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
     window.auth = auth;
     window.db = db;
+    console.log("Firebase ready → project:", firebaseConfig.projectId);
   </script>
 
-  <!-- ===================== NEW LAYOUT JAVASCRIPT ===================== -->
+  <!-- ========== NEW LAYOUT + RATINGS/BLOGS JS ========== -->
   <script>
-    // ========== VIEW SWITCHING ==========
     function showHome() {
       document.getElementById('new-home').style.display = 'block';
       document.getElementById('trailers-view').style.display = 'none';
       document.getElementById('ratings-page').style.display = 'none';
       document.getElementById('blogs-page').style.display = 'none';
-
-      document.querySelectorAll('.new-nav-item').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.page === 'home');
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.querySelectorAll('.new-nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === 'home'));
+      window.scrollTo({top:0, behavior:'smooth'});
     }
 
     function openTrailers() {
@@ -328,11 +365,8 @@
       document.getElementById('trailers-view').style.display = 'block';
       document.getElementById('ratings-page').style.display = 'none';
       document.getElementById('blogs-page').style.display = 'none';
-
-      document.querySelectorAll('.new-nav-item').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.querySelectorAll('.new-nav-item').forEach(b => b.classList.remove('active'));
+      window.scrollTo({top:0, behavior:'smooth'});
     }
 
     function showNewPage(page) {
@@ -350,32 +384,21 @@
         loadBlogs();
       }
 
-      document.querySelectorAll('.new-nav-item').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.page === page);
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.querySelectorAll('.new-nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+      window.scrollTo({top:0, behavior:'smooth'});
     }
 
-    // ========== RATINGS (Firestore) ==========
+    // Ratings
     async function submitRating() {
       const user = auth.currentUser;
-      if (!user) {
-        alert('Please login first to add a rating');
-        document.getElementById('profile-chip')?.click();
-        return;
-      }
-
+      if (!user) { alert('Please login first'); document.getElementById('signin-open')?.click(); return; }
       const title = document.getElementById('rating-title').value.trim();
       const grade = document.getElementById('rating-grade').value;
       const comment = document.getElementById('rating-comment').value.trim();
-
-      if (!title) return alert('Please enter a title');
-
+      if (!title) return alert('Enter a title');
       try {
         await db.collection('ratings').add({
-          title,
-          grade,
-          comment,
+          title, grade, comment,
           userId: user.uid,
           userName: user.displayName || user.email || 'Anonymous',
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -383,67 +406,44 @@
         document.getElementById('rating-title').value = '';
         document.getElementById('rating-comment').value = '';
         loadRatings();
-        alert('Rating saved successfully!');
-      } catch (err) {
-        console.error(err);
-        alert('Failed to save rating. Check console.');
-      }
+        alert('Rating saved!');
+      } catch (e) { console.error(e); alert('Error saving rating'); }
     }
 
     async function loadRatings() {
       const list = document.getElementById('ratings-list');
-      list.innerHTML = '<p style="color:#888;padding:20px 0;">Loading ratings...</p>';
-
+      list.innerHTML = '<p style="color:#888">Loading...</p>';
       try {
-        const snap = await db.collection('ratings').orderBy('createdAt', 'desc').limit(40).get();
+        const snap = await db.collection('ratings').orderBy('createdAt','desc').limit(40).get();
         list.innerHTML = '';
-
-        if (snap.empty) {
-          list.innerHTML = '<p style="color:#888;">No ratings yet. Be the first!</p>';
-          return;
-        }
-
+        if (snap.empty) { list.innerHTML = '<p style="color:#888">No ratings yet.</p>'; return; }
         snap.forEach(doc => {
           const d = doc.data();
-          const badgeClass = d.grade === 'S' ? 'badge-s' : (d.grade.includes('A') ? 'badge-a' : 'badge-b');
+          const cls = d.grade === 'S' ? 'badge-s' : d.grade.includes('A') ? 'badge-a' : 'badge-b';
           list.innerHTML += `
-            <div class="rating-item" style="background:#15151d;border-radius:16px;padding:14px;margin-bottom:12px;display:flex;gap:14px;align-items:center;">
-              <div style="flex:1;">
-                <h3 style="margin:0 0 4px;font-size:1rem;">${d.title}</h3>
-                <p style="margin:0 0 8px;color:#aaa;font-size:0.85rem;">${d.comment || ''}</p>
-                <div style="display:flex;align-items:center;gap:10px;">
-                  <div class="new-badge \( {badgeClass}" style="width:36px;height:36px;font-size:0.85rem;"> \){d.grade}</div>
-                  <span style="font-size:0.75rem;color:#777;">${d.userName || 'User'}</span>
-                </div>
+            <div style="background:#15151d;border-radius:16px;padding:14px;margin-bottom:12px;">
+              <h3 style="margin:0 0 4px">${d.title}</h3>
+              <p style="margin:0 0 8px;color:#aaa;font-size:0.85rem">${d.comment||''}</p>
+              <div style="display:flex;align-items:center;gap:10px">
+                <div class="new-badge \( {cls}" style="width:36px;height:36px;font-size:0.85rem"> \){d.grade}</div>
+                <span style="font-size:0.75rem;color:#777">${d.userName||'User'}</span>
               </div>
             </div>`;
         });
-      } catch (err) {
-        console.error(err);
-        list.innerHTML = '<p style="color:#f66;">Error loading ratings</p>';
-      }
+      } catch(e){ list.innerHTML = '<p style="color:#f66">Error loading</p>'; }
     }
 
-    // ========== BLOGS (Firestore) ==========
+    // Blogs
     async function submitBlog() {
       const user = auth.currentUser;
-      if (!user) {
-        alert('Please login first to publish a blog');
-        document.getElementById('profile-chip')?.click();
-        return;
-      }
-
+      if (!user) { alert('Please login first'); document.getElementById('signin-open')?.click(); return; }
       const title = document.getElementById('blog-title').value.trim();
       const image = document.getElementById('blog-image').value.trim() || 'https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=800&q=80';
       const content = document.getElementById('blog-content').value.trim();
-
-      if (!title || !content) return alert('Title and content are required');
-
+      if (!title || !content) return alert('Title and content required');
       try {
         await db.collection('blogs').add({
-          title,
-          image,
-          content,
+          title, image, content,
           userId: user.uid,
           userName: user.displayName || user.email || 'Anonymous',
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -453,56 +453,40 @@
         document.getElementById('blog-content').value = '';
         loadBlogs();
         alert('Blog published!');
-      } catch (err) {
-        console.error(err);
-        alert('Failed to publish blog');
-      }
+      } catch(e){ console.error(e); alert('Error publishing'); }
     }
 
     async function loadBlogs() {
       const list = document.getElementById('blogs-list');
-      list.innerHTML = '<p style="color:#888;padding:20px 0;">Loading blogs...</p>';
-
+      list.innerHTML = '<p style="color:#888">Loading...</p>';
       try {
-        const snap = await db.collection('blogs').orderBy('createdAt', 'desc').limit(20).get();
+        const snap = await db.collection('blogs').orderBy('createdAt','desc').limit(20).get();
         list.innerHTML = '';
-
-        if (snap.empty) {
-          list.innerHTML = '<p style="color:#888;">No blogs yet.</p>';
-          return;
-        }
-
+        if (snap.empty) { list.innerHTML = '<p style="color:#888">No blogs yet.</p>'; return; }
         snap.forEach(doc => {
           const d = doc.data();
           const date = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString() : 'Just now';
           list.innerHTML += `
-            <div class="blog-card" style="background:#15151d;border-radius:16px;overflow:hidden;margin-bottom:16px;">
-              <img src="${d.image}" style="width:100%;height:140px;object-fit:cover;" alt="">
-              <div style="padding:14px;">
-                <h3 style="margin:0 0 6px;font-size:1.05rem;">${d.title}</h3>
-                <p style="margin:0 0 10px;color:#aaa;font-size:0.9rem;line-height:1.4;">\( {d.content.substring(0, 160)} \){d.content.length > 160 ? '...' : ''}</p>
-                <div style="font-size:0.75rem;color:#777;">${d.userName} • ${date}</div>
+            <div style="background:#15151d;border-radius:16px;overflow:hidden;margin-bottom:16px;">
+              <img src="${d.image}" style="width:100%;height:140px;object-fit:cover">
+              <div style="padding:14px">
+                <h3 style="margin:0 0 6px">${d.title}</h3>
+                <p style="margin:0 0 10px;color:#aaa;font-size:0.9rem">\( {d.content.substring(0,160)} \){d.content.length>160?'...':''}</p>
+                <div style="font-size:0.75rem;color:#777">${d.userName} • ${date}</div>
               </div>
             </div>`;
         });
-      } catch (err) {
-        console.error(err);
-        list.innerHTML = '<p style="color:#f66;">Error loading blogs</p>';
-      }
+      } catch(e){ list.innerHTML = '<p style="color:#f66">Error loading</p>'; }
     }
 
-    // Start on Home
-    document.addEventListener('DOMContentLoaded', () => {
-      showHome();
-    });
+    // Start on home
+    document.addEventListener('DOMContentLoaded', showHome);
   </script>
 
-  <!-- Your existing scripts (keep these) -->
+  <!-- Existing scripts that power videos, auth, settings -->
   <script src="https://www.youtube.com/iframe_api"></script>
   <script src="app.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/settings.js"></script>
-  <!-- Add other scripts you already use (i18n.js etc.) -->
-
 </body>
 </html>
