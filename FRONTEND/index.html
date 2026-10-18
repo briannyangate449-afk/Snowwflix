@@ -1,514 +1,741 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="referrer" content="strict-origin-when-cross-origin" />
-  <title>SNOWWFLIX</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="css/settings.css" />
-  <meta name="color-scheme" content="dark light" />
-  <!-- Apply system / saved theme before paint to avoid flash -->
-  <script>
-    (function () {
-      try {
-        var raw = localStorage.getItem("snowwflix_settings");
-        var theme = "system";
-        var userSet = false;
-        if (raw) {
-          var s = JSON.parse(raw);
-          theme = s.theme || "system";
-          userSet = !!s.themeUserSet;
-        }
-        var resolved = theme;
-        if (theme === "system" || !userSet) {
-          resolved = (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches)
-            ? "light" : "blue";
-        }
-        if (resolved !== "light" && resolved !== "red" && resolved !== "blue") resolved = "blue";
-        document.documentElement.classList.add("theme-" + resolved);
-        document.documentElement.style.colorScheme = resolved === "light" ? "light" : "dark";
-      } catch (e) {}
-    })();
-  </script>
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Snowwflix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --card: #15151d;
+      --card-hover: #1c1c27;
+      --text: #ffffff;
+      --muted: #a0a0b0;
+      --red: #e50914;
+      --red-soft: #ff2d3a;
+      --green: #22c55e;
+      --blue: #3b82f6;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      overflow-x: hidden;
+      padding-bottom: 80px;
+    }
+
+    /* ========== TOP BAR ========== */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: rgba(10,10,15,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .menu-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      font-size: 1.35rem;
+      letter-spacing: -0.5px;
+      text-decoration: none;
+      color: white;
+    }
+
+    .logo .snow {
+      color: #fff;
+    }
+
+    .logo .flix {
+      color: var(--red);
+    }
+
+    .logo-icon {
+      font-size: 1.2rem;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+    }
+
+    /* ========== MAIN CONTENT ========== */
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px 16px 24px;
+    }
+
+    /* Hero Trailers Card */
+    .hero-card {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      height: 220px;
+      margin-bottom: 16px;
+      background: #111;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .hero-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 20px;
+    }
+
+    .hero-title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .hero-sub {
+      font-size: 0.85rem;
+      color: #ccc;
+      margin-bottom: 14px;
+    }
+
+    .play-btn {
+      position: absolute;
+      right: 18px;
+      bottom: 18px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--red);
+      border: none;
+      color: white;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(229,9,20,0.5);
+      transition: transform 0.2s;
+    }
+
+    .play-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* Two cards row */
+    .cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .feature-card {
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--card);
+      position: relative;
+      height: 180px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .feature-card:active {
+      transform: scale(0.97);
+    }
+
+    .feature-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.55;
+    }
+
+    .feature-content {
+      position: absolute;
+      inset: 0;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .feature-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .feature-sub {
+      font-size: 0.75rem;
+      color: #bbb;
+      margin-top: 2px;
+    }
+
+    /* Rating badges */
+    .rating-badges {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .badge-s { background: var(--red); }
+    .badge-a { background: var(--green); font-size: 0.9rem; }
+    .badge-b { background: var(--blue); }
+
+    /* My List */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-sub {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .my-list-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: none;
+    }
+
+    .my-list-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .list-thumb {
+      flex: 0 0 110px;
+      height: 70px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #222;
+    }
+
+    .list-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ========== SECTIONS (Ratings / Blogs / Profile) ========== */
+    .page-section {
+      display: none;
+      padding: 20px 16px 40px;
+      max-width: 480px;
+      margin: 0 auto;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .page-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .page-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .page-desc {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    /* Rating cards */
+    .rating-item {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .rating-item img {
+      width: 70px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .rating-info h3 {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .rating-info p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    /* Blog cards */
+    .blog-card {
+      background: var(--card);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .blog-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+    }
+
+    .blog-body {
+      padding: 14px;
+    }
+
+    .blog-body h3 {
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+
+    .blog-body p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .blog-meta {
+      font-size: 0.75rem;
+      color: #777;
+      margin-top: 10px;
+    }
+
+    /* Add form (simple) */
+    .add-form {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .add-form input,
+    .add-form textarea,
+    .add-form select {
+      width: 100%;
+      background: #0f0f16;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      color: white;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      font-family: inherit;
+    }
+
+    .add-form button {
+      width: 100%;
+      background: var(--red);
+      color: white;
+      border: none;
+      padding: 13px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    /* Profile */
+    .profile-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .profile-header img {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      margin-bottom: 12px;
+      border: 3px solid rgba(255,255,255,0.1);
+    }
+
+    .profile-header h2 {
+      font-size: 1.3rem;
+    }
+
+    .profile-header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* ========== BOTTOM NAV ========== */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 68px;
+      background: rgba(12,12,18,0.96);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 200;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      color: #777;
+      font-size: 0.7rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 6px 12px;
+      transition: color 0.2s;
+    }
+
+    .nav-item.active {
+      color: var(--red);
+    }
+
+    .nav-item svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* Desktop improvement */
+    @media (min-width: 600px) {
+      .container, .page-section {
+        max-width: 520px;
+      }
+      .hero-card {
+        height: 260px;
+      }
+    }
+  </style>
 </head>
-<body class="theme-blue" id="top">
+<body>
 
-<div id="splash-screen" class="splash-screen">
-  <div class="splash-bg-glow" aria-hidden="true"></div>
-  <div class="splash-ring" aria-hidden="true"></div>
-  <div class="snow-particles" aria-hidden="true"></div>
-  <div class="splash-logo-wrap">
-    <img src="./images/snowwflix-logo.png" class="intro-logo" alt="Snowwflix" width="320" height="320" />
-  </div>
-  <h1 class="intro-title"><span class="t-snow">SNOWW</span><span class="t-flix">FLIX</span></h1>
-  <p class="intro-tagline">STREAM BEYOND</p>
-  <div class="intro-loader"><div class="intro-progress"></div></div>
-</div>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <button class="menu-btn" onclick="alert('Menu coming soon')">☰</button>
+    <a href="#" class="logo" onclick="showPage('home')">
+      <span class="logo-icon">❄️</span>
+      <span class="snow">Snoww</span><span class="flix">flix</span>
+    </a>
+    <img src="https://i.pravatar.cc/100?img=12" alt="Profile" class="avatar" onclick="showPage('profile')">
+  </header>
 
-</div>
-<header class="navbar">
-  <!-- Left: theme (phone) + logo + hamburger below title on mobile -->
-  <div class="nav-left">
-    <button type="button" class="theme-toggle theme-toggle-mobile" id="theme-toggle" title="Toggle dark / light mode" aria-label="Toggle dark mode">
-      <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
-      <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
-    </button>
-    <div class="nav-brand-col">
-      <a href="#top" class="logo logo-link" id="logo-home" title="Snowwflix Home">
-        <span class="logo-emoji">❄️</span>
-        <span class="logo-art">SNOWWFLIX</span>
-      </a>
-      <button id="menu-toggle" class="menu-btn" aria-label="Menu" title="Menu">☰</button>
-    </div>
-    <!-- Auth-aware Login / Sign Up (shown when logged out) -->
-    <div class="nav-auth-links" id="nav-auth-links">
-      <button type="button" id="nav-login-btn" class="nav-auth-btn">Login</button>
-      <span class="nav-auth-sep">/</span>
-      <button type="button" id="nav-signup-btn" class="nav-auth-btn">Sign Up</button>
-    </div>
-  </div>
+  <!-- ========== HOME ========== -->
+  <div id="home" class="page-section active">
+    <div class="container">
 
-  <div id="side-menu" class="side-menu">
-    <button type="button" id="side-menu-close" class="side-menu-close" aria-label="Close menu">✕</button>
-    <div class="menu-profile">
-      <img id="menu-avatar" src="https://placehold.co/60x60" alt="Profile">
-      <h4 id="menu-display-name" data-i18n="guest">Guest</h4>
-      <p id="menu-user-email" style="margin:4px 0 0;font-size:0.8rem;color:#8b949e;"></p>
-      <label class="avatar-upload-label hidden" id="avatar-upload-wrap">
-        <input type="file" id="avatar-upload" accept="image/*" hidden />
-        Change photo
-      </label>
-    </div>
-    <button id="settings-open" class="menu-item">⚙️ <span data-i18n="settings">Settings</span></button>
-    <button id="premium-buy" class="menu-item">⭐ <span data-i18n="premium">Premium</span></button>
-    <button id="signin-open" class="menu-item">👤 <span data-i18n="login">Login / Sign Up</span></button>
-    <button id="signout-btn" class="menu-item hidden" type="button">🚪 <span data-i18n="logout">Log Out</span></button>
-  </div>
-
-  <!-- Center: quick search with predictive dropdown -->
-  <div class="nav-search">
-    <div class="top-search-wrap">
-      <input id="top-search" class="top-search-input" type="search" placeholder="Search movie trailers…" data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
-      <ul id="top-suggestions" class="suggestion-box top-suggestion-box hidden" role="listbox"></ul>
-    </div>
-    <button type="button" id="top-search-btn" class="primary-btn top-search-btn" data-i18n="search">Search</button>
-  </div>
-
-  <!-- Right: profile (Login / Sign up full label when guest) -->
-  <div class="top-icons nav-right">
-    <button type="button" class="theme-toggle theme-toggle-desktop" id="theme-toggle-desktop" title="Toggle dark / light mode" aria-label="Toggle dark mode">
-      <span class="theme-icon theme-icon-moon" aria-hidden="true">🌙</span>
-      <span class="theme-icon theme-icon-sun" aria-hidden="true">☀️</span>
-    </button>
-    <button type="button" class="profile-chip" id="profile-chip" title="Account">
-      <img id="nav-avatar" src="https://placehold.co/40x40/333/ffffff?text=?" alt="" />
-      <span id="nav-username" class="nav-username">Login / Sign up</span>
-    </button>
-  </div>
-</header>
-
-<main>
-  <section class="hero" id="hero">
-    <div class="hero-poster" id="hero-poster">
-      <div class="hero-gradient"></div>
-      <div class="hero-content">
-        <p class="hero-eyebrow" data-i18n="featured">Featured</p>
-        <h1 id="hero-title">Loading featured titles…</h1>
-        <p class="hero-meta" id="hero-meta">Curated trailers · Watch in one tap</p>
-        <div class="hero-actions">
-          <button class="primary-btn hero-cta" id="hero-watch"><span data-i18n="watchTrailer">▶ Watch Trailer</span></button>
-          <button class="ghost-btn hero-cta" id="hero-prev" type="button">◀</button>
-          <button class="ghost-btn hero-cta" id="hero-next" type="button">▶</button>
+      <!-- Hero Trailers -->
+      <div class="hero-card" onclick="alert('Opening Trailers...')">
+        <img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=800&q=80" alt="Snowy mountains">
+        <div class="hero-overlay">
+          <div class="hero-title">Snowwflix Trailers</div>
+          <div class="hero-sub">New • Winter Releases</div>
         </div>
-        <div class="hero-dots" id="hero-dots"></div>
+        <button class="play-btn">▶</button>
       </div>
-      <!-- 4 rotating trending cards on hero -->
-      <div class="hero-cards-rail" id="hero-cards-rail" aria-hidden="true"></div>
-    </div>
-  </section>
 
-  <nav class="category-nav" id="category-nav" aria-label="Categories">
-    <button type="button" class="cat-chip active" data-cat="trending">🔥 Trending</button>
-    <button type="button" class="cat-chip" data-cat="top50">🏆 Top 50</button>
-    <button type="button" class="cat-chip" data-cat="thriller">Thriller</button>
-    <button type="button" class="cat-chip" data-cat="horror">Horror</button>
-    <button type="button" class="cat-chip" data-cat="animation">Animation</button>
-    <button type="button" class="cat-chip" data-cat="romance">Romance</button>
-    <button type="button" class="cat-chip" data-cat="drama">Drama</button>
-    <button type="button" class="cat-chip" data-cat="watch">📺 Where to Watch</button>
-  </nav>
+      <!-- Ratings + Blogs cards -->
+      <div class="cards-row">
+        <!-- Ratings -->
+        <div class="feature-card" onclick="showPage('ratings')">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80" alt="Snow">
+          <div class="feature-content">
+            <div>
+              <div class="feature-title">Snoww Ratings</div>
+              <div class="feature-sub">Explore • Community Scores</div>
+            </div>
+            <div class="rating-badges">
+              <div class="badge badge-s">S</div>
+              <div class="badge badge-a">A★</div>
+              <div class="badge badge-b">B+</div>
+            </div>
+          </div>
+        </div>
 
-  <section class="rows" id="content-rows">
-    <div class="row-block hidden" data-row="search-results" id="search-results-block">
-      <div class="row-header"><h2 id="search-results-title">🔍 Search results</h2><button type="button" class="row-more" id="clear-search-results">Clear</button></div>
-      <div class="row-scroller movie-grid" id="row-search-results"></div>
-    </div>
-    <div class="row-block" data-row="trending">
-      <div class="row-header"><h2>🔥 Trending</h2><button type="button" class="row-more" data-cat="trending">See all</button></div>
-      <div class="row-scroller movie-grid" id="row-trending"></div>
-    </div>
-    <div class="row-block" data-row="top50">
-      <div class="row-header"><h2>🏆 Top 50 Trailers</h2><button type="button" class="row-more" data-cat="top50">See all</button></div>
-      <p class="row-sub">Highest-rated trailers · IMDb &amp; Rotten Tomatoes style scores</p>
-      <div class="row-scroller movie-grid" id="row-top50"></div>
-    </div>
-    <div class="row-block" data-row="thriller">
-      <div class="row-header"><h2>Thriller</h2><button type="button" class="row-more" data-cat="thriller">See all</button></div>
-      <div class="row-scroller movie-grid" id="row-thriller"></div>
-    </div>
-    <div class="row-block" data-row="horror">
-      <div class="row-header"><h2>Horror</h2><button type="button" class="row-more" data-cat="horror">See all</button></div>
-      <div class="row-scroller movie-grid" id="row-horror"></div>
-    </div>
-    <div class="row-block" data-row="animation">
-      <div class="row-header"><h2>Animation</h2><button type="button" class="row-more" data-cat="animation">See all</button></div>
-      <div class="row-scroller movie-grid" id="row-animation"></div>
-    </div>
-    <div class="row-block" data-row="romance">
-      <div class="row-header"><h2>Romance</h2><button type="button" class="row-more" data-cat="romance">See all</button></div>
-      <div class="row-scroller movie-grid" id="row-romance"></div>
-    </div>
-    <div class="row-block" data-row="drama">
-      <div class="row-header"><h2>Drama</h2><button type="button" class="row-more" data-cat="drama">See all</button></div>
-      <div class="row-scroller movie-grid" id="row-drama"></div>
-    </div>
-    <div class="row-block" data-row="watch">
-      <div class="row-header"><h2>📺 Where to Watch</h2></div>
-      <p class="row-sub">Discover full movies &amp; streaming platforms</p>
-      <div class="where-to-watch-grid" id="row-watch">
-        <a class="watch-card" href="https://moviebox.ph/" target="_blank" rel="noopener noreferrer">
-          <span class="watch-icon">🎬</span>
-          <span class="watch-name">MovieBox</span>
-          <span class="watch-desc">Movies &amp; series</span>
-        </a>
-        <a class="watch-card" href="https://www.imdb.com/" target="_blank" rel="noopener noreferrer">
-          <span class="watch-icon">⭐</span>
-          <span class="watch-name">IMDb</span>
-          <span class="watch-desc">Ratings &amp; info</span>
-        </a>
-        <a class="watch-card" href="https://videodownloader.site/" target="_blank" rel="noopener noreferrer">
-          <span class="watch-icon">⬇️</span>
-          <span class="watch-name">Video Downloader</span>
-          <span class="watch-desc">Save offline</span>
-        </a>
-        <a class="watch-card" href="https://watch.plex.tv/" target="_blank" rel="noopener noreferrer">
-          <span class="watch-icon">📺</span>
-          <span class="watch-name">Plex</span>
-          <span class="watch-desc">Free streaming</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Legacy single grid (hidden; used as fallback target) -->
-  <div id="movie-grid" class="movie-grid hidden" aria-hidden="true"></div>
-</main>
-
-<!-- Site footer -->
-<footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-col">
-      <h4>Snowwflix</h4>
-      <ul>
-        <li><a href="#top">Home</a></li>
-        <li><a href="#category-nav">Trending</a></li>
-        <li><a href="#row-thriller">Trailers</a></li>
-        <li><button type="button" class="footer-link-btn" id="footer-settings">Settings</button></li>
-        <li><button type="button" class="footer-link-btn" id="footer-account">Account</button></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Genres</h4>
-      <ul>
-        <li><a href="#row-thriller">Thriller</a></li>
-        <li><a href="#row-horror">Horror</a></li>
-        <li><a href="#row-animation">Animation</a></li>
-        <li><a href="#row-romance">Romance</a></li>
-        <li><a href="#row-drama">Drama</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Region</h4>
-      <ul>
-        <li>Kenya</li>
-        <li>United States</li>
-        <li>United Kingdom</li>
-        <li>Global</li>
-      </ul>
-    </div>
-    <div class="footer-col footer-connect">
-      <h4>Connect &amp; Support</h4>
-      <div class="social-logos" aria-label="Social links">
-        <a href="https://www.tiktok.com/@snowwflix" target="_blank" rel="noopener noreferrer" class="social-logo" title="TikTok" aria-label="TikTok">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3.15 15.2a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.75a8.18 8.18 0 0 0 4.76 1.52V6.84a4.85 4.85 0 0 1-1-.15z"/></svg>
-        </a>
-        <a href="https://www.instagram.com/snowwflix/?hl=en" target="_blank" rel="noopener noreferrer" class="social-logo" title="Instagram" aria-label="Instagram">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16m0-2.16C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95C23.73 2.69 21.31.27 16.95.07 15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 1 0 0 12.32 6.16 6.16 0 0 0 0-12.32zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.41-11.85a1.44 1.44 0 1 0 0 2.88 1.44 1.44 0 0 0 0-2.88z"/></svg>
-        </a>
-        <a href="https://x.com/SNOWWFLIX" target="_blank" rel="noopener noreferrer" class="social-logo" title="X" aria-label="X">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.227-8.26L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        </a>
-        <a href="https://www.facebook.com/profile.php?id=61592722932826" target="_blank" rel="noopener noreferrer" class="social-logo" title="Facebook" aria-label="Facebook">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.79-4.7 4.53-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.62 23.1 24 18.1 24 12.07z"/></svg>
-        </a>
-        <a href="https://wa.me/254711414071" target="_blank" rel="noopener noreferrer" class="social-logo" title="WhatsApp" aria-label="WhatsApp">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.04-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.08 4.48.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35zM12.05 21.78h-.01a9.78 9.78 0 0 1-4.98-1.36l-.36-.21-3.7.97 1-3.62-.23-.37a9.77 9.77 0 0 1-1.5-5.2 9.8 9.8 0 0 1 9.8-9.8 9.73 9.73 0 0 1 6.93 2.87 9.74 9.74 0 0 1 2.87 6.93 9.8 9.8 0 0 1-9.82 9.79zm8.41-18.2A11.7 11.7 0 0 0 12.04 0C5.46 0 .1 5.35.1 11.93c0 2.1.55 4.15 1.6 5.96L0 24l6.26-1.64a11.9 11.9 0 0 0 5.78 1.47h.01c6.58 0 11.93-5.35 11.93-11.93a11.86 11.86 0 0 0-3.52-8.42z"/></svg>
-        </a>
-        <a href="mailto:briannyangate449@gmail.com" class="social-logo" title="Email" aria-label="Email">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-        </a>
-      </div>
-      <ul class="footer-legal">
-        <li><a href="privacy.html" target="_blank">Privacy Policy</a></li>
-        <li><a href="terms.html" target="_blank">Terms of Service</a></li>
-      </ul>
-    </div>
-    <div class="footer-brand">
-      <div class="footer-logo">❄️ <span>SNOWWFLIX</span></div>
-      <p class="footer-copy">© 2026 Snowwflix. All rights reserved.<br>Founded by Brian Nyangate · Nairobi, Kenya.</p>
-      <p class="footer-disclaimer">Disclaimer: Snowwflix is a trailer discovery platform. We do not host full copyrighted films on our servers. Trailers and promotional materials are provided via third-party services for discovery purposes only.</p>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>Discover trailers, trending titles, and your next watch — Streaming Your Cinematic Universe.</p>
-  </div>
-</footer>
-
-
-
-<!-- Snowwflix custom player -->
-<div id="trailer-modal" class="modal sf-player-modal hidden" data-video-id="">
-  <div class="modal-backdrop sf-player-backdrop"></div>
-  <div class="sf-player sf-player-glow" id="player-surface">
-    <div class="sf-player-top">
-      <div class="sf-player-brand">
-        <span class="sf-player-logo">❄️ SNOWWFLIX</span>
-        <span class="sf-player-badge">HD Trailer</span>
-      </div>
-      <div class="sf-player-top-actions">
-        <button type="button" id="sf-btn-minimize" class="sf-pbtn" title="Minimize">—</button>
-        <button type="button" id="btn-fullscreen" class="sf-pbtn" title="Fullscreen">⛶</button>
-        <button type="button" id="sf-btn-stop" class="sf-pbtn" title="Stop">⏹</button>
-        <button type="button" id="btn-close-player" class="sf-pbtn sf-pbtn-close" title="Close">✕</button>
-      </div>
-    </div>
-
-    <div class="sf-player-stage" id="sf-player-stage">
-      <div class="sf-iframe-wrap" id="sf-iframe-wrap">
-        <div id="player-frame"></div>
-      </div>
-      <!-- Blocks YouTube chrome / external links -->
-      <div class="sf-click-shield sf-shield-full" id="sf-shield-full" aria-hidden="true"></div>
-      <div class="sf-click-shield sf-shield-top" aria-hidden="true"></div>
-      <div class="sf-click-shield sf-shield-bottom" aria-hidden="true"></div>
-      <div class="sf-click-shield sf-shield-right" aria-hidden="true"></div>
-      <button type="button" class="sf-big-play" id="sf-big-play" aria-label="Play">▶</button>
-
-      <!-- End-of-video suggestions (stay on Snowwflix) -->
-      <div id="sf-ended-overlay" class="sf-ended-overlay hidden">
-        <div class="sf-ended-inner">
-          <p class="sf-ended-label">Up next on Snowwflix</p>
-          <h3 id="sf-ended-title">More trailers</h3>
-          <div id="sf-suggestions" class="sf-suggestions"></div>
-          <div class="sf-ended-actions">
-            <button type="button" class="primary-btn" id="sf-ended-replay">Replay</button>
-            <button type="button" class="ghost-btn" id="sf-ended-close">Close</button>
+        <!-- Blogs -->
+        <div class="feature-card" onclick="showPage('blogs')">
+          <img src="https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=600&q=80" alt="Snowy forest">
+          <div class="feature-content">
+            <div>
+              <div class="feature-title">Blogs</div>
+              <div class="feature-sub">Guides • Winter Stories</div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="sf-player-bottom">
-      <div class="sf-progress-wrap" id="sf-progress-wrap" title="Seek">
-        <div class="sf-progress-track">
-          <div class="sf-progress-buffered" id="sf-progress-buffered"></div>
-          <div class="sf-progress-played" id="sf-progress-played"></div>
-          <div class="sf-progress-thumb" id="sf-progress-thumb"></div>
-        </div>
-        <div class="sf-progress-time">
-          <span id="sf-time-current">0:00</span>
-          <span id="sf-time-duration">0:00</span>
+      <!-- My List -->
+      <div class="section-header">
+        <div>
+          <div class="section-title">❄️ My List</div>
+          <div class="section-sub">Saved • 12 titles</div>
         </div>
       </div>
-      <div class="sf-player-info">
-        <h3 class="player-title" id="player-title">Trailer</h3>
-        <p class="sf-player-sub" id="player-sub">Watching on Snowwflix</p>
+      <div class="my-list-scroll">
+        <div class="list-thumb"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300&q=80" alt=""></div>
+        <div class="list-thumb"><img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=300&q=80" alt=""></div>
+        <div class="list-thumb"><img src="https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=300&q=80" alt=""></div>
+        <div class="list-thumb"><img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300&q=80" alt=""></div>
+        <div class="list-thumb"><img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=300&q=80" alt=""></div>
       </div>
-      <div class="sf-player-controls">
-        <button type="button" class="sf-pbtn" id="sf-btn-back10" title="Back 10s">⏪</button>
-        <button type="button" class="sf-pbtn" id="sf-btn-play" title="Play/Pause">▶</button>
-        <button type="button" class="sf-pbtn" id="sf-btn-fwd10" title="Forward 10s">⏩</button>
-        <button type="button" class="sf-pbtn" id="sf-btn-mute" title="Mute">🔊</button>
-        <button type="button" class="sf-pbtn" id="sf-btn-cc" title="Subtitles (CC)">CC</button>
-        <button type="button" class="sf-pbtn" id="sf-btn-replay" title="Replay">↻</button>
-        <button type="button" class="sf-pbtn" id="sf-btn-like" title="Like">♡</button>
-        <button type="button" class="sf-pbtn" id="sf-btn-watchlater" title="Watch Later">⏱</button>
-        <button type="button" class="sf-pbtn" id="sf-btn-subscribe" title="Subscribe on YouTube">🔔</button>
-        <a class="sf-pbtn sf-pbtn-link" id="sf-btn-download" href="https://v30.www-y2mate.com/" target="_blank" rel="noopener noreferrer" title="Download">⬇️</a>
+
+    </div>
+  </div>
+
+  <!-- ========== S RATING ========== -->
+  <div id="ratings" class="page-section">
+    <div class="page-title">Snoww Ratings</div>
+    <div class="page-desc">Community scores • S / A★ / B+ system</div>
+
+    <!-- Simple Add Rating form -->
+    <div class="add-form">
+      <input type="text" id="rating-title" placeholder="Movie / Trailer title">
+      <select id="rating-grade">
+        <option value="S">S — Masterpiece</option>
+        <option value="A">A★ — Excellent</option>
+        <option value="B+">B+ — Very Good</option>
+        <option value="B">B — Good</option>
+        <option value="C">C — Average</option>
+      </select>
+      <textarea id="rating-comment" rows="2" placeholder="Short comment (optional)"></textarea>
+      <button onclick="addRating()">Add Rating</button>
+    </div>
+
+    <div id="ratings-list">
+      <!-- Example items -->
+      <div class="rating-item">
+        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=200&q=80" alt="">
+        <div class="rating-info">
+          <h3>Interstellar</h3>
+          <p>Mind-bending masterpiece</p>
+          <div class="badge badge-s" style="width:36px;height:36px;font-size:0.9rem;">S</div>
+        </div>
       </div>
-      <p class="sf-player-brandline">Powered by <strong>Snowwflix</strong></p>
+      <div class="rating-item">
+        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=200&q=80" alt="">
+        <div class="rating-info">
+          <h3>Dune: Part Two</h3>
+          <p>Visually stunning</p>
+          <div class="badge badge-a" style="width:36px;height:36px;font-size:0.85rem;">A★</div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Account / Auth Modal (multi-step sign up & login) -->
-<div id="account-modal" class="modal hidden">
-  <div class="modal-backdrop"></div>
-  <div class="modal-surface auth-surface" style="max-width:520px">
-    <button id="account-close" class="close-x">✖</button>
-    <h2 id="auth-heading">Sign In / Sign Up</h2>
+  <!-- ========== BLOGS ========== -->
+  <div id="blogs" class="page-section">
+    <div class="page-title">Blogs</div>
+    <div class="page-desc">Guides • Winter Stories • Reviews</div>
 
-    <div id="auth-steps">
-      <!-- Step 1: Personal details for Sign Up -->
-      <form id="signup-step1" class="auth-step">
-        <label><input id="su-first" type="text" placeholder="First name" required /></label>
-        <label><input id="su-last" type="text" placeholder="Last name" required /></label>
-        <label><input id="su-email" type="email" placeholder="Email" data-i18n-placeholder="email" required /></label>
-        <label><input id="su-phone" type="tel" placeholder="Phone (optional)" /></label>
-        <div style="display:flex;gap:.5rem;margin-top:.6rem">
-          <button id="to-step2" type="button" class="primary-btn">Continue</button>
-          <button id="switch-to-login" type="button" class="ghost-btn">I already have account</button>
+    <!-- Simple Add Blog form -->
+    <div class="add-form">
+      <input type="text" id="blog-title" placeholder="Blog title">
+      <input type="text" id="blog-image" placeholder="Image URL (optional)">
+      <textarea id="blog-content" rows="3" placeholder="Write your post..."></textarea>
+      <button onclick="addBlog()">Publish Blog</button>
+    </div>
+
+    <div id="blogs-list">
+      <div class="blog-card">
+        <img src="https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=600&q=80" alt="">
+        <div class="blog-body">
+          <h3>Best Winter Movies to Watch in 2026</h3>
+          <p>From cozy classics to chilling thrillers — here are our top picks for the cold season.</p>
+          <div class="blog-meta">Guides • 3 days ago</div>
         </div>
-      </form>
-
-      <!-- Step 2: username + password -->
-      <form id="signup-step2" class="auth-step hidden">
-        <label><input id="su-username" type="text" placeholder="Choose username" required /></label>
-        <label>
-          <input id="su-password" type="password" placeholder="Strong password" required />
-          <small id="password-hint">Use 8+ characters, numbers, mix of cases</small>
-        </label>
-        <div style="display:flex;gap:.5rem;margin-top:.6rem">
-          <button id="signup-final" type="button" class="primary-btn">Create account</button>
-          <button id="back-to-step1" type="button" class="ghost-btn">Back</button>
+      </div>
+      <div class="blog-card">
+        <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80" alt="">
+        <div class="blog-body">
+          <h3>How We Rate Films at Snowwflix</h3>
+          <p>Understanding the S / A★ / B+ system and what each grade really means.</p>
+          <div class="blog-meta">Guides • 1 week ago</div>
         </div>
-      </form>
-
-      <!-- Login form -->
-      <form id="login-form" class="auth-step hidden">
-        <label><input id="li-email" type="email" placeholder="Email" required /></label>
-        <label><input id="li-password" type="password" placeholder="Password" required /></label>
-        <div style="display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap">
-          <button id="login-final" type="button" class="primary-btn">Login</button>
-          <button id="to-signup" type="button" class="ghost-btn">Don't have account</button>
-        </div>
-        <button id="forgot-password" type="button" class="ghost-btn" style="margin-top:.6rem;width:100%">Forgot password?</button>
-        <div style="margin-top:1rem;display:flex;gap:.5rem;align-items:center">
-          <button id="google-signin" class="ghost-btn" type="button" style="width:100%">Sign in with Google</button>
-        </div>
-      </form>
-
-      <div id="auth-msg" style="margin-top:.6rem;color:var(--muted)"></div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- SETTINGS MODAL -->
-
-<div id="settings-modal" class="settings-modal hidden">
-
-    <div class="settings-overlay"></div>
-
-    <div class="settings-window">
-
-        <button id="close-settings" class="close-settings">
-            ✕
-        </button>
-
-        <div class="settings-header">
-            <h2>⚙️ Settings</h2>
-            <p>Customize your Snowwflix experience</p>
-        </div>
-
-        <div class="settings-body">
-
-            <div class="setting-item">
-                <span>🌙 Dark Mode</span>
-                <input type="checkbox" id="darkMode">
-            </div>
-
-            <div class="setting-item">
-                <span>🎬 Autoplay Trailers</span>
-                <input type="checkbox" id="autoplay" checked>
-            </div>
-
-            <div class="setting-item">
-                <span>🔔 Notifications</span>
-                <input type="checkbox" id="notifications" checked>
-            </div>
-
-            <div class="setting-item">
-                <span>✨ Animations</span>
-                <input type="checkbox" id="animations" checked>
-            </div>
-
-        </div>
-
+  <!-- ========== PROFILE ========== -->
+  <div id="profile" class="page-section">
+    <div class="profile-header">
+      <img src="https://i.pravatar.cc/150?img=12" alt="You">
+      <h2>Lorde Snoww</h2>
+      <p>@lordesnoww</p>
     </div>
 
-</div>
-<!-- Toast notifications -->
-<div id="toast-wrap" style="position:fixed;right:1rem;bottom:1rem;z-index:1000"></div>
-
-<!-- Guest login nudge (every ~1 min until signed in) -->
-<div id="login-nudge" class="login-nudge hidden" role="dialog" aria-label="Sign up prompt">
-  <button type="button" class="login-nudge-close" id="login-nudge-close" aria-label="Dismiss">✕</button>
-  <div class="login-nudge-icon">❄️</div>
-  <div class="login-nudge-body">
-    <strong>Log in to unlock more</strong>
-    <p>Login or sign up free to <strong>save</strong> trailers, <strong>like</strong> them, and <strong>download</strong> videos. Takes under a minute.</p>
-    <div class="login-nudge-actions">
-      <button type="button" class="primary-btn" id="login-nudge-signup">Sign up free</button>
-      <button type="button" class="ghost-btn" id="login-nudge-login">Login</button>
+    <div class="add-form">
+      <p style="text-align:center;color:var(--muted);font-size:0.9rem;">
+        Profile settings, saved list, and account options will appear here.<br><br>
+        You can later connect this to your existing Firebase auth.
+      </p>
     </div>
   </div>
-</div>
 
-<!-- Firebase config + initialization (trailers-7ffca / snoww web app) -->
-<script>
-  // === Snowwflix Firebase Config – project: trailers-7ffca ===
-  const firebaseConfig = {
-    apiKey: "AIzaSyCBjGfxzkCw9DVSfYIqWzrBkGwtAkfgd18",
-    authDomain: "trailers-7ffca.firebaseapp.com",
-    projectId: "trailers-7ffca",
-    storageBucket: "trailers-7ffca.firebasestorage.app",
-    messagingSenderId: "197034717747",
-    appId: "1:197034717747:web:3b683557cb8f2024b0e946",
-    measurementId: "G-0GDJRDEJT1"
-  };
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="showPage('home')" data-page="home">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      Home
+    </button>
+    <button class="nav-item" onclick="showPage('ratings')" data-page="ratings">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      S Rating
+    </button>
+    <button class="nav-item" onclick="showPage('blogs')" data-page="blogs">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      Blogs
+    </button>
+    <button class="nav-item" onclick="showPage('profile')" data-page="profile">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      Profile
+    </button>
+  </nav>
 
-  // Initialize Firebase (compat SDK)
-  const app = firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = (firebase && firebase.firestore) ? firebase.firestore() : null;
-  const storage = (firebase && firebase.storage) ? firebase.storage() : null;
+  <script>
+    // Simple page switcher
+    function showPage(pageId) {
+      document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
 
-  // Expose globally for auth.js, app.js, settings.js, etc.
-  window.auth = auth;
-  window.db = db;
-  window.storage = storage;
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.page === pageId);
+      });
 
-  console.log("Firebase ready → project:", firebaseConfig.projectId);
-</script>
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-<!-- Main app code -->
+    // Add Rating (localStorage for now)
+    function addRating() {
+      const title = document.getElementById('rating-title').value.trim();
+      const grade = document.getElementById('rating-grade').value;
+      const comment = document.getElementById('rating-comment').value.trim();
 
-<div id="settings-panel"></div>
+      if (!title) return alert('Please enter a title');
 
-<script src="https://www.youtube.com/iframe_api"></script>
-<script src="app.js"></script>
-<script src="js/i18n.js"></script>
-<script src="js/auth.js"></script>
-<script src="js/settings.js"></script>
+      const list = document.getElementById('ratings-list');
+      const badgeClass = grade === 'S' ? 'badge-s' : grade.startsWith('A') ? 'badge-a' : 'badge-b';
 
+      const item = document.createElement('div');
+      item.className = 'rating-item';
+      item.innerHTML = `
+        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=200&q=80" alt="">
+        <div class="rating-info">
+          <h3>${title}</h3>
+          <p>${comment || 'No comment'}</p>
+          <div class="badge \( {badgeClass}" style="width:36px;height:36px;font-size:0.9rem;"> \){grade}</div>
+        </div>
+      `;
+      list.prepend(item);
+
+      // Clear form
+      document.getElementById('rating-title').value = '';
+      document.getElementById('rating-comment').value = '';
+      alert('Rating added! (Currently stored only in this session – we can connect it to your backend next)');
+    }
+
+    // Add Blog (localStorage for now)
+    function addBlog() {
+      const title = document.getElementById('blog-title').value.trim();
+      const image = document.getElementById('blog-image').value.trim() || 'https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=600&q=80';
+      const content = document.getElementById('blog-content').value.trim();
+
+      if (!title || !content) return alert('Please fill title and content');
+
+      const list = document.getElementById('blogs-list');
+      const card = document.createElement('div');
+      card.className = 'blog-card';
+      card.innerHTML = `
+        <img src="${image}" alt="">
+        <div class="blog-body">
+          <h3>${title}</h3>
+          <p>${content}</p>
+          <div class="blog-meta">Just now</div>
+        </div>
+      `;
+      list.prepend(card);
+
+      document.getElementById('blog-title').value = '';
+      document.getElementById('blog-image').value = '';
+      document.getElementById('blog-content').value = '';
+      alert('Blog published! (Currently session-only – next step is saving to Firebase/MongoDB)');
+    }
+  </script>
 </body>
 </html>
