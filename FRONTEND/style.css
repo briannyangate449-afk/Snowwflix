@@ -410,3 +410,109 @@ body {
   .new-container { max-width: 520px; }
   .new-hero { height: 250px; }
 }
+/* ========== TRAILERS VIEW IMPROVEMENTS ========== */
+
+/* Hero looks cleaner */
+#trailers-view .hero {
+  margin: 12px 12px 8px;
+  border-radius: 16px;
+  overflow: hidden;
+  height: 42vw;
+  max-height: 280px;
+  min-height: 180px;
+}
+
+#trailers-view .hero-content h1 {
+  font-size: 1.35rem !important;
+  line-height: 1.25;
+}
+
+#trailers-view .hero-actions {
+  gap: 8px;
+}
+
+#trailers-view .category-nav {
+  padding: 8px 12px 4px;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+#trailers-view .category-nav::-webkit-scrollbar { display: none; }
+
+#trailers-view .cat-chip {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border-radius: 20px;
+}
+
+/* Movie cards – smaller and tighter */
+#trailers-view .movie-grid,
+#trailers-view .row-scroller {
+  display: flex !important;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 6px 12px 16px;
+  scrollbar-width: none;
+}
+#trailers-view .movie-grid::-webkit-scrollbar,
+#trailers-view .row-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+#trailers-view .movie-card {
+  flex: 0 0 130px !important;
+  width: 130px !important;
+  min-width: 130px !important;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #15151d;
+  transition: transform 0.2s;
+}
+
+#trailers-view .movie-card:active {
+  transform: scale(0.96);
+}
+
+#trailers-view .card-thumb {
+  height: 75px !important;
+  position: relative;
+}
+
+#trailers-view .card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#trailers-view .card-body {
+  padding: 8px 8px 10px;
+}
+
+#trailers-view .card-body h3 {
+  font-size: 0.78rem !important;
+  line-height: 1.25;
+  margin: 0 0 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+#trailers-view .card-channel {
+  font-size: 0.68rem;
+  color: #888;
+  margin: 0;
+}
+
+#trailers-view .row-header {
+  padding: 10px 12px 4px;
+}
+
+#trailers-view .row-header h2 {
+  font-size: 1.05rem;
+}
+
+#trailers-view .row-block {
+  margin-bottom: 8px;
+}
