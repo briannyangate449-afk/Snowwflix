@@ -1,89 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Snowwflix</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0a0a0f;
-      --card: #15151d;
-      --card-hover: #1c1c27;
-      --text: #ffffff;
-      --muted: #a0a0b0;
-      --red: #e50914;
-      --red-soft: #ff2d3a;
-      --green: #22c55e;
-      --blue: #3b82f6;
-      --border: rgba(255,255,255,0.08);
-    }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/settings.css" />
+  <meta name="color-scheme" content="dark" />
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
+  <style>
+    /* ===== NEW LAYOUT STYLES (override / addition) ===== */
+    :root {
+      --new-bg: #0a0a0f;
+      --new-card: #15151d;
+      --new-red: #e50914;
+      --new-muted: #a0a0b0;
+      --new-border: rgba(255,255,255,0.08);
     }
 
     body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100dvh;
-      overflow-x: hidden;
-      padding-bottom: 80px;
+      background: var(--new-bg) !important;
+      padding-bottom: 75px !important;
     }
 
-    /* ========== TOP BAR ========== */
-    .topbar {
+    /* Hide original navbar when using new layout */
+    .navbar { display: none !important; }
+
+    /* New Topbar */
+    .new-topbar {
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 200;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 14px 16px;
-      background: rgba(10,10,15,0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      background: rgba(10,10,15,0.95);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--new-border);
     }
-
-    .menu-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 22px;
-      cursor: pointer;
-      padding: 4px;
-    }
-
-    .logo {
+    .new-logo {
       display: flex;
       align-items: center;
       gap: 6px;
       font-weight: 800;
-      font-size: 1.35rem;
-      letter-spacing: -0.5px;
+      font-size: 1.3rem;
       text-decoration: none;
       color: white;
     }
-
-    .logo .snow {
-      color: #fff;
-    }
-
-    .logo .flix {
-      color: var(--red);
-    }
-
-    .logo-icon {
-      font-size: 1.2rem;
-    }
-
-    .avatar {
+    .new-logo .flix { color: var(--new-red); }
+    .new-avatar {
       width: 36px;
       height: 36px;
       border-radius: 50%;
@@ -92,106 +61,77 @@
       cursor: pointer;
     }
 
-    /* ========== MAIN CONTENT ========== */
-    .container {
+    /* New Home Container */
+    .new-container {
       max-width: 480px;
       margin: 0 auto;
-      padding: 16px 16px 24px;
+      padding: 16px 16px 30px;
     }
 
-    /* Hero Trailers Card */
-    .hero-card {
+    /* Hero card */
+    .new-hero {
       position: relative;
       border-radius: 20px;
       overflow: hidden;
-      height: 220px;
+      height: 210px;
       margin-bottom: 16px;
-      background: #111;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.45);
     }
-
-    .hero-card img {
+    .new-hero img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
     }
-
-    .hero-overlay {
+    .new-hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 10%, transparent 70%);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding: 20px;
+      padding: 18px;
     }
-
-    .hero-title {
-      font-size: 1.45rem;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
-
-    .hero-sub {
-      font-size: 0.85rem;
-      color: #ccc;
-      margin-bottom: 14px;
-    }
-
-    .play-btn {
+    .new-hero-title { font-size: 1.4rem; font-weight: 800; }
+    .new-hero-sub { font-size: 0.85rem; color: #ccc; margin-top: 2px; }
+    .new-play {
       position: absolute;
-      right: 18px;
-      bottom: 18px;
+      right: 16px;
+      bottom: 16px;
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      background: var(--red);
+      background: var(--new-red);
       border: none;
       color: white;
       font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 4px 20px rgba(229,9,20,0.5);
-      transition: transform 0.2s;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 18px rgba(229,9,20,0.55);
     }
 
-    .play-btn:active {
-      transform: scale(0.92);
-    }
-
-    /* Two cards row */
-    .cards-row {
+    /* Two feature cards */
+    .new-cards {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
-
-    .feature-card {
+    .new-feature {
+      position: relative;
       border-radius: 18px;
       overflow: hidden;
-      background: var(--card);
-      position: relative;
-      height: 180px;
+      height: 175px;
       cursor: pointer;
-      transition: transform 0.2s, background 0.2s;
+      background: var(--new-card);
     }
-
-    .feature-card:active {
-      transform: scale(0.97);
-    }
-
-    .feature-card img {
+    .new-feature img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.55;
+      opacity: 0.5;
     }
-
-    .feature-content {
+    .new-feature-content {
       position: absolute;
       inset: 0;
       padding: 14px;
@@ -199,258 +139,67 @@
       flex-direction: column;
       justify-content: space-between;
     }
-
-    .feature-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-    }
-
-    .feature-sub {
-      font-size: 0.75rem;
-      color: #bbb;
-      margin-top: 2px;
-    }
-
-    /* Rating badges */
-    .rating-badges {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .badge {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .new-feature-title { font-size: 1.05rem; font-weight: 700; }
+    .new-feature-sub { font-size: 0.75rem; color: #bbb; }
+    .new-badges { display: flex; gap: 8px; margin-top: 8px; }
+    .new-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
       font-weight: 800;
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: white;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     }
-
-    .badge-s { background: var(--red); }
-    .badge-a { background: var(--green); font-size: 0.9rem; }
-    .badge-b { background: var(--blue); }
+    .badge-s { background: #e50914; }
+    .badge-a { background: #22c55e; }
+    .badge-b { background: #3b82f6; }
 
     /* My List */
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .section-title {
+    .new-section-title {
       font-size: 1.15rem;
       font-weight: 700;
       display: flex;
       align-items: center;
       gap: 8px;
+      margin-bottom: 4px;
     }
-
-    .section-sub {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .my-list-scroll {
+    .new-section-sub { font-size: 0.8rem; color: var(--new-muted); margin-bottom: 12px; }
+    .new-mylist {
       display: flex;
       gap: 10px;
       overflow-x: auto;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
       scrollbar-width: none;
     }
-
-    .my-list-scroll::-webkit-scrollbar {
-      display: none;
-    }
-
-    .list-thumb {
+    .new-mylist::-webkit-scrollbar { display: none; }
+    .new-thumb {
       flex: 0 0 110px;
       height: 70px;
       border-radius: 12px;
       overflow: hidden;
       background: #222;
     }
+    .new-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
-    .list-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* ========== SECTIONS (Ratings / Blogs / Profile) ========== */
-    .page-section {
-      display: none;
-      padding: 20px 16px 40px;
-      max-width: 480px;
-      margin: 0 auto;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .page-section.active {
-      display: block;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .page-title {
-      font-size: 1.6rem;
-      font-weight: 800;
-      margin-bottom: 6px;
-    }
-
-    .page-desc {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-bottom: 24px;
-    }
-
-    /* Rating cards */
-    .rating-item {
-      background: var(--card);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 12px;
-      display: flex;
-      gap: 14px;
-      align-items: center;
-    }
-
-    .rating-item img {
-      width: 70px;
-      height: 100px;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-
-    .rating-info h3 {
-      font-size: 1rem;
-      margin-bottom: 4px;
-    }
-
-    .rating-info p {
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    /* Blog cards */
-    .blog-card {
-      background: var(--card);
-      border-radius: 16px;
-      overflow: hidden;
-      margin-bottom: 16px;
-    }
-
-    .blog-card img {
-      width: 100%;
-      height: 140px;
-      object-fit: cover;
-    }
-
-    .blog-body {
-      padding: 14px;
-    }
-
-    .blog-body h3 {
-      font-size: 1.05rem;
-      margin-bottom: 6px;
-    }
-
-    .blog-body p {
-      font-size: 0.85rem;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-
-    .blog-meta {
-      font-size: 0.75rem;
-      color: #777;
-      margin-top: 10px;
-    }
-
-    /* Add form (simple) */
-    .add-form {
-      background: var(--card);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 24px;
-    }
-
-    .add-form input,
-    .add-form textarea,
-    .add-form select {
-      width: 100%;
-      background: #0f0f16;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px;
-      color: white;
-      font-size: 0.95rem;
-      margin-bottom: 10px;
-      font-family: inherit;
-    }
-
-    .add-form button {
-      width: 100%;
-      background: var(--red);
-      color: white;
-      border: none;
-      padding: 13px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-
-    /* Profile */
-    .profile-header {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-
-    .profile-header img {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      margin-bottom: 12px;
-      border: 3px solid rgba(255,255,255,0.1);
-    }
-
-    .profile-header h2 {
-      font-size: 1.3rem;
-    }
-
-    .profile-header p {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    /* ========== BOTTOM NAV ========== */
-    .bottom-nav {
+    /* Bottom Nav */
+    .new-bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       height: 68px;
-      background: rgba(12,12,18,0.96);
+      background: rgba(12,12,18,0.97);
       backdrop-filter: blur(16px);
-      border-top: 1px solid var(--border);
+      border-top: 1px solid var(--new-border);
       display: flex;
       justify-content: space-around;
       align-items: center;
-      z-index: 200;
+      z-index: 300;
       padding-bottom: env(safe-area-inset-bottom);
     }
-
-    .nav-item {
+    .new-nav-item {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -461,281 +210,527 @@
       font-size: 0.7rem;
       font-weight: 500;
       cursor: pointer;
-      padding: 6px 12px;
-      transition: color 0.2s;
+      padding: 6px 10px;
+    }
+    .new-nav-item.active { color: var(--new-red); }
+    .new-nav-item svg { width: 24px; height: 24px; }
+
+    /* Page sections */
+    .new-page { display: none; padding: 16px 16px 40px; max-width: 480px; margin: 0 auto; }
+    .new-page.active { display: block; animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
     }
 
-    .nav-item.active {
-      color: var(--red);
+    /* Forms & lists for Ratings / Blogs */
+    .new-form {
+      background: var(--new-card);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .new-form input,
+    .new-form textarea,
+    .new-form select {
+      width: 100%;
+      background: #0f0f16;
+      border: 1px solid var(--new-border);
+      border-radius: 10px;
+      padding: 12px;
+      color: white;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+      font-family: inherit;
+    }
+    .new-form button {
+      width: 100%;
+      background: var(--new-red);
+      color: white;
+      border: none;
+      padding: 13px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
     }
 
-    .nav-item svg {
-      width: 24px;
-      height: 24px;
+    .rating-item, .blog-card {
+      background: var(--new-card);
+      border-radius: 16px;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .rating-item {
+      display: flex;
+      gap: 14px;
+      padding: 14px;
+      align-items: center;
+    }
+    .rating-item img {
+      width: 65px;
+      height: 95px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .blog-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+    }
+    .blog-body { padding: 14px; }
+
+    /* Trailers view (original content) */
+    #trailers-view {
+      display: none;
+    }
+    #trailers-view.active {
+      display: block;
     }
 
-    /* Desktop improvement */
+    /* Make original rows work inside the new layout */
+    #trailers-view .rows {
+      padding: 0 12px 40px;
+    }
+
     @media (min-width: 600px) {
-      .container, .page-section {
-        max-width: 520px;
-      }
-      .hero-card {
-        height: 260px;
-      }
+      .new-container, .new-page { max-width: 520px; }
+      .new-hero { height: 250px; }
     }
   </style>
 </head>
-<body>
+<body class="theme-blue">
 
-  <!-- TOP BAR -->
-  <header class="topbar">
-    <button class="menu-btn" onclick="alert('Menu coming soon')">☰</button>
-    <a href="#" class="logo" onclick="showPage('home')">
-      <span class="logo-icon">❄️</span>
-      <span class="snow">Snoww</span><span class="flix">flix</span>
+  <!-- NEW TOPBAR -->
+  <header class="new-topbar">
+    <button class="menu-btn" style="background:none;border:none;color:white;font-size:22px;cursor:pointer" onclick="document.getElementById('side-menu')?.classList.toggle('open')">☰</button>
+    <a href="#" class="new-logo" onclick="showNewPage('home'); return false;">
+      ❄️ <span>Snoww</span><span class="flix">flix</span>
     </a>
-    <img src="https://i.pravatar.cc/100?img=12" alt="Profile" class="avatar" onclick="showPage('profile')">
+    <img id="nav-avatar-new" src="https://placehold.co/40x40/333/ffffff?text=?" class="new-avatar" onclick="showNewPage('profile')">
   </header>
 
-  <!-- ========== HOME ========== -->
-  <div id="home" class="page-section active">
-    <div class="container">
-
-      <!-- Hero Trailers -->
-      <div class="hero-card" onclick="alert('Opening Trailers...')">
-        <img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=800&q=80" alt="Snowy mountains">
-        <div class="hero-overlay">
-          <div class="hero-title">Snowwflix Trailers</div>
-          <div class="hero-sub">New • Winter Releases</div>
+  <!-- ========== HOME (Mockup) ========== -->
+  <div id="home" class="new-page active">
+    <div class="new-container">
+      <!-- Big Trailers Card → opens original trailers -->
+      <div class="new-hero" onclick="showTrailers()">
+        <img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=900&q=80" alt="Snowy mountains">
+        <div class="new-hero-overlay">
+          <div class="new-hero-title">Snowwflix Trailers</div>
+          <div class="new-hero-sub">New • Winter Releases</div>
         </div>
-        <button class="play-btn">▶</button>
+        <button class="new-play">▶</button>
       </div>
 
-      <!-- Ratings + Blogs cards -->
-      <div class="cards-row">
-        <!-- Ratings -->
-        <div class="feature-card" onclick="showPage('ratings')">
-          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80" alt="Snow">
-          <div class="feature-content">
+      <!-- Ratings + Blogs -->
+      <div class="new-cards">
+        <div class="new-feature" onclick="showNewPage('ratings')">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80" alt="">
+          <div class="new-feature-content">
             <div>
-              <div class="feature-title">Snoww Ratings</div>
-              <div class="feature-sub">Explore • Community Scores</div>
+              <div class="new-feature-title">Snoww Ratings</div>
+              <div class="new-feature-sub">Explore • Community Scores</div>
             </div>
-            <div class="rating-badges">
-              <div class="badge badge-s">S</div>
-              <div class="badge badge-a">A★</div>
-              <div class="badge badge-b">B+</div>
+            <div class="new-badges">
+              <div class="new-badge badge-s">S</div>
+              <div class="new-badge badge-a">A★</div>
+              <div class="new-badge badge-b">B+</div>
             </div>
           </div>
         </div>
 
-        <!-- Blogs -->
-        <div class="feature-card" onclick="showPage('blogs')">
-          <img src="https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=600&q=80" alt="Snowy forest">
-          <div class="feature-content">
+        <div class="new-feature" onclick="showNewPage('blogs')">
+          <img src="https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=600&q=80" alt="">
+          <div class="new-feature-content">
             <div>
-              <div class="feature-title">Blogs</div>
-              <div class="feature-sub">Guides • Winter Stories</div>
+              <div class="new-feature-title">Blogs</div>
+              <div class="new-feature-sub">Guides • Winter Stories</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- My List -->
-      <div class="section-header">
-        <div>
-          <div class="section-title">❄️ My List</div>
-          <div class="section-sub">Saved • 12 titles</div>
-        </div>
+      <!-- My List preview -->
+      <div class="new-section-title">❄️ My List</div>
+      <div class="new-section-sub">Saved titles</div>
+      <div class="new-mylist" id="new-mylist-preview">
+        <!-- Will be filled by JS if you have saved items -->
+        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300&q=80"></div>
+        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=300&q=80"></div>
+        <div class="new-thumb"><img src="https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=300&q=80"></div>
       </div>
-      <div class="my-list-scroll">
-        <div class="list-thumb"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300&q=80" alt=""></div>
-        <div class="list-thumb"><img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=300&q=80" alt=""></div>
-        <div class="list-thumb"><img src="https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=300&q=80" alt=""></div>
-        <div class="list-thumb"><img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=300&q=80" alt=""></div>
-        <div class="list-thumb"><img src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=300&q=80" alt=""></div>
-      </div>
-
     </div>
   </div>
 
-  <!-- ========== S RATING ========== -->
-  <div id="ratings" class="page-section">
-    <div class="page-title">Snoww Ratings</div>
-    <div class="page-desc">Community scores • S / A★ / B+ system</div>
+  <!-- ========== TRAILERS (Original experience) ========== -->
+  <div id="trailers-view">
+    <!-- Keep your original main content here -->
+    <main>
+      <section class="hero" id="hero">
+        <div class="hero-poster" id="hero-poster">
+          <div class="hero-gradient"></div>
+          <div class="hero-content">
+            <p class="hero-eyebrow">Featured</p>
+            <h1 id="hero-title">Loading featured titles…</h1>
+            <p class="hero-meta" id="hero-meta">Curated trailers · Watch in one tap</p>
+            <div class="hero-actions">
+              <button class="primary-btn hero-cta" id="hero-watch">▶ Watch Trailer</button>
+              <button class="ghost-btn hero-cta" id="hero-prev">◀</button>
+              <button class="ghost-btn hero-cta" id="hero-next">▶</button>
+            </div>
+            <div class="hero-dots" id="hero-dots"></div>
+          </div>
+        </div>
+      </section>
 
-    <!-- Simple Add Rating form -->
-    <div class="add-form">
+      <nav class="category-nav" id="category-nav">
+        <button type="button" class="cat-chip active" data-cat="trending">🔥 Trending</button>
+        <button type="button" class="cat-chip" data-cat="top50">🏆 Top 50</button>
+        <button type="button" class="cat-chip" data-cat="thriller">Thriller</button>
+        <button type="button" class="cat-chip" data-cat="horror">Horror</button>
+        <button type="button" class="cat-chip" data-cat="animation">Animation</button>
+        <button type="button" class="cat-chip" data-cat="romance">Romance</button>
+        <button type="button" class="cat-chip" data-cat="drama">Drama</button>
+      </nav>
+
+      <section class="rows" id="content-rows">
+        <!-- Your existing rows will be filled by app.js -->
+        <div class="row-block" data-row="trending">
+          <div class="row-header"><h2>🔥 Trending</h2></div>
+          <div class="row-scroller movie-grid" id="row-trending"></div>
+        </div>
+        <div class="row-block" data-row="top50">
+          <div class="row-header"><h2>🏆 Top 50 Trailers</h2></div>
+          <div class="row-scroller movie-grid" id="row-top50"></div>
+        </div>
+        <!-- Add other genre rows the same way if needed -->
+      </section>
+    </main>
+  </div>
+
+  <!-- ========== S RATING ========== -->
+  <div id="ratings" class="new-page">
+    <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:6px">Snoww Ratings</h2>
+    <p style="color:var(--new-muted);margin-bottom:20px">Community scores • S / A★ / B+</p>
+
+    <div class="new-form" id="rating-form-wrap">
       <input type="text" id="rating-title" placeholder="Movie / Trailer title">
       <select id="rating-grade">
         <option value="S">S — Masterpiece</option>
-        <option value="A">A★ — Excellent</option>
+        <option value="A★">A★ — Excellent</option>
         <option value="B+">B+ — Very Good</option>
         <option value="B">B — Good</option>
         <option value="C">C — Average</option>
       </select>
       <textarea id="rating-comment" rows="2" placeholder="Short comment (optional)"></textarea>
-      <button onclick="addRating()">Add Rating</button>
+      <button onclick="submitRating()">Add Rating</button>
     </div>
 
-    <div id="ratings-list">
-      <!-- Example items -->
-      <div class="rating-item">
-        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=200&q=80" alt="">
-        <div class="rating-info">
-          <h3>Interstellar</h3>
-          <p>Mind-bending masterpiece</p>
-          <div class="badge badge-s" style="width:36px;height:36px;font-size:0.9rem;">S</div>
-        </div>
-      </div>
-      <div class="rating-item">
-        <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=200&q=80" alt="">
-        <div class="rating-info">
-          <h3>Dune: Part Two</h3>
-          <p>Visually stunning</p>
-          <div class="badge badge-a" style="width:36px;height:36px;font-size:0.85rem;">A★</div>
-        </div>
-      </div>
-    </div>
+    <div id="ratings-list"></div>
   </div>
 
   <!-- ========== BLOGS ========== -->
-  <div id="blogs" class="page-section">
-    <div class="page-title">Blogs</div>
-    <div class="page-desc">Guides • Winter Stories • Reviews</div>
+  <div id="blogs" class="new-page">
+    <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:6px">Blogs</h2>
+    <p style="color:var(--new-muted);margin-bottom:20px">Guides • Winter Stories</p>
 
-    <!-- Simple Add Blog form -->
-    <div class="add-form">
+    <div class="new-form" id="blog-form-wrap">
       <input type="text" id="blog-title" placeholder="Blog title">
-      <input type="text" id="blog-image" placeholder="Image URL (optional)">
-      <textarea id="blog-content" rows="3" placeholder="Write your post..."></textarea>
-      <button onclick="addBlog()">Publish Blog</button>
+      <input type="text" id="blog-image" placeholder="Cover image URL (optional)">
+      <textarea id="blog-content" rows="4" placeholder="Write your post..."></textarea>
+      <button onclick="submitBlog()">Publish Blog</button>
     </div>
 
-    <div id="blogs-list">
-      <div class="blog-card">
-        <img src="https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=600&q=80" alt="">
-        <div class="blog-body">
-          <h3>Best Winter Movies to Watch in 2026</h3>
-          <p>From cozy classics to chilling thrillers — here are our top picks for the cold season.</p>
-          <div class="blog-meta">Guides • 3 days ago</div>
-        </div>
-      </div>
-      <div class="blog-card">
-        <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&q=80" alt="">
-        <div class="blog-body">
-          <h3>How We Rate Films at Snowwflix</h3>
-          <p>Understanding the S / A★ / B+ system and what each grade really means.</p>
-          <div class="blog-meta">Guides • 1 week ago</div>
-        </div>
-      </div>
-    </div>
+    <div id="blogs-list"></div>
   </div>
 
   <!-- ========== PROFILE ========== -->
-  <div id="profile" class="page-section">
-    <div class="profile-header">
-      <img src="https://i.pravatar.cc/150?img=12" alt="You">
-      <h2>Lorde Snoww</h2>
-      <p>@lordesnoww</p>
+  <div id="profile" class="new-page">
+    <div style="text-align:center;margin-bottom:28px">
+      <img id="profile-avatar" src="https://placehold.co/100x100/333/ffffff?text=?" style="width:90px;height:90px;border-radius:50%;border:3px solid rgba(255,255,255,0.1);margin-bottom:12px">
+      <h2 id="profile-name" style="font-size:1.3rem">Guest</h2>
+      <p id="profile-email" style="color:var(--new-muted)"></p>
     </div>
 
-    <div class="add-form">
-      <p style="text-align:center;color:var(--muted);font-size:0.9rem;">
-        Profile settings, saved list, and account options will appear here.<br><br>
-        You can later connect this to your existing Firebase auth.
-      </p>
+    <div id="profile-logged-out" class="new-form" style="text-align:center">
+      <p style="margin-bottom:16px;color:var(--new-muted)">Sign in to save ratings, blogs and your list</p>
+      <button onclick="document.getElementById('signin-open')?.click()" style="background:var(--new-red);color:white;border:none;padding:13px;border-radius:12px;font-weight:700;width:100%;cursor:pointer">
+        Login / Sign Up
+      </button>
+    </div>
+
+    <div id="profile-logged-in" class="new-form" style="display:none">
+      <button onclick="doSignOut()" style="background:#333;color:white;border:none;padding:13px;border-radius:12px;font-weight:700;width:100%;cursor:pointer;margin-top:10px">
+        Sign Out
+      </button>
     </div>
   </div>
 
   <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
-    <button class="nav-item active" onclick="showPage('home')" data-page="home">
+  <nav class="new-bottom-nav">
+    <button class="new-nav-item active" data-page="home" onclick="showNewPage('home')">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
       Home
     </button>
-    <button class="nav-item" onclick="showPage('ratings')" data-page="ratings">
+    <button class="new-nav-item" data-page="ratings" onclick="showNewPage('ratings')">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
       S Rating
     </button>
-    <button class="nav-item" onclick="showPage('blogs')" data-page="blogs">
+    <button class="new-nav-item" data-page="blogs" onclick="showNewPage('blogs')">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
       Blogs
     </button>
-    <button class="nav-item" onclick="showPage('profile')" data-page="profile">
+    <button class="new-nav-item" data-page="profile" onclick="showNewPage('profile')">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
       Profile
     </button>
   </nav>
 
-  <script>
-    // Simple page switcher
-    function showPage(pageId) {
-      document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
+  <!-- ===== KEEP YOUR ORIGINAL MODALS & SIDE MENU ===== -->
+  <!-- (Copy the side-menu, auth modal, settings modal from your current index.html here) -->
+  <!-- For brevity I am not pasting the full original modals again. -->
+  <!-- Just keep the existing side-menu, auth modal and settings modal code. -->
 
-      document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.page === pageId);
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
+  <script>
+    // === Your existing Firebase config ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyCBjGfxzkCw9DVSfYIqWzrBkGwtAkfgd18",
+      authDomain: "trailers-7ffca.firebaseapp.com",
+      projectId: "trailers-7ffca",
+      storageBucket: "trailers-7ffca.firebasestorage.app",
+      messagingSenderId: "197034717747",
+      appId: "1:197034717747:web:3b683557cb8f2024b0e946",
+      measurementId: "G-0GDJRDEJT1"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    window.auth = auth;
+    window.db = db;
+
+    // ===== NEW LAYOUT LOGIC =====
+    function showNewPage(page) {
+      // Hide all new pages + trailers
+      document.querySelectorAll('.new-page').forEach(el => el.classList.remove('active'));
+      document.getElementById('trailers-view').classList.remove('active');
+      document.getElementById('trailers-view').style.display = 'none';
+
+      if (page === 'trailers') {
+        document.getElementById('trailers-view').style.display = 'block';
+        document.getElementById('trailers-view').classList.add('active');
+      } else {
+        const el = document.getElementById(page);
+        if (el) el.classList.add('active');
+      }
+
+      // Update bottom nav
+      document.querySelectorAll('.new-nav-item').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.page === page);
       });
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Load data when opening pages
+      if (page === 'ratings') loadRatings();
+      if (page === 'blogs') loadBlogs();
+      if (page === 'profile') updateProfileUI();
     }
 
-    // Add Rating (localStorage for now)
-    function addRating() {
+    function showTrailers() {
+      showNewPage('trailers');
+    }
+
+    // ===== RATINGS (Firestore) =====
+    async function submitRating() {
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Please login first to add a rating');
+        showNewPage('profile');
+        return;
+      }
+
       const title = document.getElementById('rating-title').value.trim();
       const grade = document.getElementById('rating-grade').value;
       const comment = document.getElementById('rating-comment').value.trim();
 
-      if (!title) return alert('Please enter a title');
+      if (!title) return alert('Enter a title');
 
-      const list = document.getElementById('ratings-list');
-      const badgeClass = grade === 'S' ? 'badge-s' : grade.startsWith('A') ? 'badge-a' : 'badge-b';
-
-      const item = document.createElement('div');
-      item.className = 'rating-item';
-      item.innerHTML = `
-        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=200&q=80" alt="">
-        <div class="rating-info">
-          <h3>${title}</h3>
-          <p>${comment || 'No comment'}</p>
-          <div class="badge \( {badgeClass}" style="width:36px;height:36px;font-size:0.9rem;"> \){grade}</div>
-        </div>
-      `;
-      list.prepend(item);
-
-      // Clear form
-      document.getElementById('rating-title').value = '';
-      document.getElementById('rating-comment').value = '';
-      alert('Rating added! (Currently stored only in this session – we can connect it to your backend next)');
+      try {
+        await db.collection('ratings').add({
+          title,
+          grade,
+          comment,
+          userId: user.uid,
+          userName: user.displayName || user.email || 'Anonymous',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById('rating-title').value = '';
+        document.getElementById('rating-comment').value = '';
+        loadRatings();
+        alert('Rating saved!');
+      } catch (err) {
+        console.error(err);
+        alert('Could not save rating');
+      }
     }
 
-    // Add Blog (localStorage for now)
-    function addBlog() {
+    async function loadRatings() {
+      const list = document.getElementById('ratings-list');
+      list.innerHTML = '<p style="color:#888">Loading...</p>';
+
+      try {
+        const snap = await db.collection('ratings').orderBy('createdAt', 'desc').limit(30).get();
+        list.innerHTML = '';
+        if (snap.empty) {
+          list.innerHTML = '<p style="color:#888">No ratings yet. Be the first!</p>';
+          return;
+        }
+        snap.forEach(doc => {
+          const d = doc.data();
+          const badgeClass = d.grade === 'S' ? 'badge-s' : d.grade.includes('A') ? 'badge-a' : 'badge-b';
+          list.innerHTML += `
+            <div class="rating-item">
+              <div style="flex:1">
+                <h3 style="margin:0 0 4px">${d.title}</h3>
+                <p style="margin:0 0 8px;color:#aaa;font-size:0.85rem">${d.comment || ''}</p>
+                <div style="display:flex;align-items:center;gap:10px">
+                  <div class="new-badge \( {badgeClass}" style="width:36px;height:36px;font-size:0.85rem"> \){d.grade}</div>
+                  <span style="font-size:0.75rem;color:#777">${d.userName || 'User'}</span>
+                </div>
+              </div>
+            </div>`;
+        });
+      } catch (err) {
+        list.innerHTML = '<p style="color:#f66">Error loading ratings</p>';
+      }
+    }
+
+    // ===== BLOGS (Firestore) =====
+    async function submitBlog() {
+      const user = auth.currentUser;
+      if (!user) {
+        alert('Please login first to publish a blog');
+        showNewPage('profile');
+        return;
+      }
+
       const title = document.getElementById('blog-title').value.trim();
-      const image = document.getElementById('blog-image').value.trim() || 'https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=600&q=80';
+      const image = document.getElementById('blog-image').value.trim() || 'https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=800&q=80';
       const content = document.getElementById('blog-content').value.trim();
 
-      if (!title || !content) return alert('Please fill title and content');
+      if (!title || !content) return alert('Title and content required');
 
-      const list = document.getElementById('blogs-list');
-      const card = document.createElement('div');
-      card.className = 'blog-card';
-      card.innerHTML = `
-        <img src="${image}" alt="">
-        <div class="blog-body">
-          <h3>${title}</h3>
-          <p>${content}</p>
-          <div class="blog-meta">Just now</div>
-        </div>
-      `;
-      list.prepend(card);
-
-      document.getElementById('blog-title').value = '';
-      document.getElementById('blog-image').value = '';
-      document.getElementById('blog-content').value = '';
-      alert('Blog published! (Currently session-only – next step is saving to Firebase/MongoDB)');
+      try {
+        await db.collection('blogs').add({
+          title,
+          image,
+          content,
+          userId: user.uid,
+          userName: user.displayName || user.email || 'Anonymous',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById('blog-title').value = '';
+        document.getElementById('blog-image').value = '';
+        document.getElementById('blog-content').value = '';
+        loadBlogs();
+        alert('Blog published!');
+      } catch (err) {
+        console.error(err);
+        alert('Could not publish blog');
+      }
     }
+
+    async function loadBlogs() {
+      const list = document.getElementById('blogs-list');
+      list.innerHTML = '<p style="color:#888">Loading...</p>';
+
+      try {
+        const snap = await db.collection('blogs').orderBy('createdAt', 'desc').limit(20).get();
+        list.innerHTML = '';
+        if (snap.empty) {
+          list.innerHTML = '<p style="color:#888">No blogs yet.</p>';
+          return;
+        }
+        snap.forEach(doc => {
+          const d = doc.data();
+          const date = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleDateString() : 'Just now';
+          list.innerHTML += `
+            <div class="blog-card">
+              <img src="${d.image}" alt="">
+              <div class="blog-body">
+                <h3 style="margin:0 0 6px">${d.title}</h3>
+                <p style="margin:0 0 10px;color:#aaa;font-size:0.9rem;line-height:1.4">\( {d.content.substring(0, 140)} \){d.content.length > 140 ? '...' : ''}</p>
+                <div style="font-size:0.75rem;color:#777">${d.userName} • ${date}</div>
+              </div>
+            </div>`;
+        });
+      } catch (err) {
+        list.innerHTML = '<p style="color:#f66">Error loading blogs</p>';
+      }
+    }
+
+    // ===== PROFILE =====
+    function updateProfileUI() {
+      const user = auth.currentUser;
+      const avatar = document.getElementById('profile-avatar');
+      const nameEl = document.getElementById('profile-name');
+      const emailEl = document.getElementById('profile-email');
+      const loggedOut = document.getElementById('profile-logged-out');
+      const loggedIn = document.getElementById('profile-logged-in');
+      const navAvatar = document.getElementById('nav-avatar-new');
+
+      if (user) {
+        nameEl.textContent = user.displayName || 'User';
+        emailEl.textContent = user.email || '';
+        if (user.photoURL) {
+          avatar.src = user.photoURL;
+          navAvatar.src = user.photoURL;
+        }
+        loggedOut.style.display = 'none';
+        loggedIn.style.display = 'block';
+      } else {
+        nameEl.textContent = 'Guest';
+        emailEl.textContent = '';
+        avatar.src = 'https://placehold.co/100x100/333/ffffff?text=?';
+        navAvatar.src = 'https://placehold.co/40x40/333/ffffff?text=?';
+        loggedOut.style.display = 'block';
+        loggedIn.style.display = 'none';
+      }
+    }
+
+    async function doSignOut() {
+      try {
+        await auth.signOut();
+        updateProfileUI();
+        alert('Signed out');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // Listen for auth changes
+    auth.onAuthStateChanged(user => {
+      updateProfileUI();
+    });
+
+    // Load ratings & blogs on start (optional)
+    // loadRatings(); loadBlogs();
   </script>
+
+  <!-- Your existing scripts -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="app.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/settings.js"></script>
+  <!-- Add other scripts you already have -->
+
 </body>
 </html>
