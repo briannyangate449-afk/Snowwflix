@@ -3,12 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <title>Snowwflix</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="css/settings.css" />
@@ -20,20 +19,12 @@
     (function () {
       try {
         var raw = localStorage.getItem("snowwflix_settings");
-        var theme = "system";
-        var userSet = false;
+        var theme = "blue";
         if (raw) {
           var s = JSON.parse(raw);
-          theme = s.theme || "system";
-          userSet = !!s.themeUserSet;
+          theme = s.theme || "blue";
         }
-        var resolved = theme;
-        if (theme === "system" || !userSet) {
-          resolved = (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "blue";
-        }
-        if (resolved !== "light" && resolved !== "red" && resolved !== "blue") resolved = "blue";
-        document.documentElement.classList.add("theme-" + resolved);
-        document.documentElement.style.colorScheme = resolved === "light" ? "light" : "dark";
+        document.documentElement.classList.add("theme-" + theme);
       } catch (e) {}
     })();
   </script>
@@ -47,16 +38,12 @@
 <body class="theme-blue" id="top">
 
   <!-- ========== NEW TOP BAR ========== -->
-  <header class="new-topbar" id="new-topbar">
-    <button style="background:none;border:none;color:white;font-size:22px;cursor:pointer;padding:4px"
-            onclick="document.getElementById('menu-toggle')?.click()">☰</button>
-
+  <header class="new-topbar">
+    <button id="hamburger-btn" aria-label="Menu">☰</button>
     <a href="#" class="new-logo" onclick="showHome(); return false;">
       ❄️ Snoww<span class="flix">flix</span>
     </a>
-
-    <img id="nav-avatar-new" src="https://placehold.co/40x40/333/ffffff?text=?" class="new-avatar"
-         onclick="document.getElementById('profile-chip')?.click()" alt="Profile">
+    <img id="nav-avatar-new" src="https://placehold.co/40x40/333/ffffff?text=?" class="new-avatar" alt="Profile" onclick="document.getElementById('signin-open')?.click()">
   </header>
 
   <!-- ========== NEW HOME ========== -->
@@ -100,7 +87,7 @@
 
       <div class="new-section-title">❄️ My List</div>
       <div class="new-section-sub">Saved titles</div>
-      <div class="new-mylist" id="new-mylist-preview">
+      <div class="new-mylist">
         <div class="new-thumb"><img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300&q=80"></div>
         <div class="new-thumb"><img src="https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?w=300&q=80"></div>
         <div class="new-thumb"><img src="https://images.unsplash.com/photo-1491002052546-bf38f186af21?w=300&q=80"></div>
@@ -108,7 +95,7 @@
     </div>
   </div>
 
-  <!-- ========== ORIGINAL TRAILERS VIEW ========== -->
+  <!-- ========== TRAILERS VIEW (original experience) ========== -->
   <div id="trailers-view" style="display:none;">
     <main>
       <section class="hero" id="hero">
@@ -137,7 +124,6 @@
         <button type="button" class="cat-chip" data-cat="animation">Animation</button>
         <button type="button" class="cat-chip" data-cat="romance">Romance</button>
         <button type="button" class="cat-chip" data-cat="drama">Drama</button>
-        <button type="button" class="cat-chip" data-cat="watch">📺 Where to Watch</button>
       </nav>
 
       <section class="rows" id="content-rows">
@@ -152,7 +138,6 @@
         </div>
         <div class="row-block" data-row="top50">
           <div class="row-header"><h2>🏆 Top 50 Trailers</h2><button type="button" class="row-more" data-cat="top50">See all</button></div>
-          <p class="row-sub">Highest-rated trailers</p>
           <div class="row-scroller movie-grid" id="row-top50"></div>
         </div>
         <div class="row-block" data-row="thriller">
@@ -180,7 +165,7 @@
     </main>
   </div>
 
-  <!-- ========== RATINGS PAGE ========== -->
+  <!-- ========== RATINGS ========== -->
   <div id="ratings-page" style="display:none; max-width:480px; margin:0 auto; padding:16px 16px 100px;">
     <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:6px;">Snoww Ratings</h2>
     <p style="color:#a0a0b0;margin-bottom:20px;">Community scores • S / A★ / B+</p>
@@ -199,7 +184,7 @@
     <div id="ratings-list"></div>
   </div>
 
-  <!-- ========== BLOGS PAGE ========== -->
+  <!-- ========== BLOGS ========== -->
   <div id="blogs-page" style="display:none; max-width:480px; margin:0 auto; padding:16px 16px 100px;">
     <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:6px;">Blogs</h2>
     <p style="color:#a0a0b0;margin-bottom:20px;">Guides • Winter Stories</p>
@@ -212,7 +197,7 @@
     <div id="blogs-list"></div>
   </div>
 
-  <!-- ========== FIXED BOTTOM NAV ========== -->
+  <!-- ========== BOTTOM NAV ========== -->
   <nav class="new-bottom-nav">
     <button class="new-nav-item active" data-page="home" onclick="showHome()">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
@@ -226,111 +211,100 @@
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
       Blogs
     </button>
-    <button class="new-nav-item" data-page="profile" onclick="document.getElementById('profile-chip')?.click()">
+    <button class="new-nav-item" data-page="profile" onclick="document.getElementById('signin-open')?.click()">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
       Profile
     </button>
   </nav>
 
-  <!-- ========== SIDE MENU (Original) ========== -->
+  <!-- ========== SIDE MENU ========== -->
   <div id="side-menu" class="side-menu">
-    <button type="button" id="side-menu-close" class="side-menu-close" aria-label="Close menu">✕</button>
+    <button type="button" id="side-menu-close" class="side-menu-close">✕</button>
     <div class="menu-profile">
       <img id="menu-avatar" src="https://placehold.co/60x60" alt="Profile">
       <h4 id="menu-display-name">Guest</h4>
-      <p id="menu-user-email" style="margin:4px 0 0;font-size:0.8rem;color:#8b949e;"></p>
-      <label class="avatar-upload-label hidden" id="avatar-upload-wrap">
-        <input type="file" id="avatar-upload" accept="image/*" hidden />
-        Change photo
-      </label>
+      <p id="menu-user-email" style="font-size:0.8rem;color:#8b949e;"></p>
     </div>
     <button id="settings-open" class="menu-item">⚙️ Settings</button>
-    <button id="premium-buy" class="menu-item">⭐ Premium</button>
     <button id="signin-open" class="menu-item">👤 Login / Sign Up</button>
-    <button id="signout-btn" class="menu-item hidden" type="button">🚪 Log Out</button>
+    <button id="signout-btn" class="menu-item hidden">🚪 Log Out</button>
   </div>
 
-  <!-- Hidden original navbar elements that auth.js and app.js expect -->
+  <!-- Hidden elements required by app.js / auth.js -->
   <div style="display:none;">
     <button id="menu-toggle"></button>
     <button id="profile-chip"></button>
-    <img id="nav-avatar" src="https://placehold.co/40x40/333/ffffff?text=?" />
-    <span id="nav-username">Login / Sign up</span>
-    <div id="nav-auth-links">
-      <button id="nav-login-btn">Login</button>
-      <button id="nav-signup-btn">Sign Up</button>
-    </div>
+    <img id="nav-avatar" src="">
+    <span id="nav-username"></span>
   </div>
 
-  <!-- ========== AUTH MODAL (Original structure) ========== -->
+  <!-- ========== AUTH MODAL ========== -->
   <div id="auth-modal" class="modal hidden">
     <div class="modal-backdrop"></div>
-    <div class="modal-surface auth-surface">
-      <button type="button" class="close-x" id="auth-close">✕</button>
+    <div class="modal-surface" style="background:#0f0f16;padding:20px;border-radius:16px;max-width:360px;width:90%;position:relative;">
+      <button type="button" class="close-x" id="auth-close" style="position:absolute;right:12px;top:12px;background:none;border:none;color:white;font-size:1.3rem;cursor:pointer;">✕</button>
       
       <div id="auth-login-view">
-        <h2>Login</h2>
-        <form id="login-form">
-          <input type="email" id="login-email" placeholder="Email" required />
-          <input type="password" id="login-password" placeholder="Password" required />
-          <button type="button" id="login-final" class="primary-btn">Login</button>
-          <button type="button" id="to-signup" class="ghost-btn">Don't have account? Sign up</button>
-          <button type="button" id="forgot-password" class="ghost-btn">Forgot password?</button>
-          <button type="button" id="google-signin" class="ghost-btn" style="width:100%;margin-top:0.5rem;">Sign in with Google</button>
-        </form>
+        <h2 style="margin-bottom:16px;">Login</h2>
+        <input type="email" id="login-email" placeholder="Email" style="width:100%;padding:12px;margin-bottom:10px;border-radius:10px;border:1px solid #333;background:#1a1a24;color:white;">
+        <input type="password" id="login-password" placeholder="Password" style="width:100%;padding:12px;margin-bottom:10px;border-radius:10px;border:1px solid #333;background:#1a1a24;color:white;">
+        <button type="button" id="login-final" class="primary-btn" style="width:100%;margin-bottom:8px;">Login</button>
+        <button type="button" id="to-signup" class="ghost-btn" style="width:100%;margin-bottom:8px;">Don't have account? Sign up</button>
+        <button type="button" id="google-signin" class="ghost-btn" style="width:100%;">Sign in with Google</button>
       </div>
 
       <div id="auth-signup-view" class="hidden">
-        <h2>Sign Up</h2>
-        <form id="signup-form">
-          <input type="text" id="signup-firstname" placeholder="First name" />
-          <input type="text" id="signup-lastname" placeholder="Last name" />
-          <input type="text" id="signup-username" placeholder="Username" />
-          <input type="email" id="signup-email" placeholder="Email" required />
-          <input type="password" id="signup-password" placeholder="Password" required />
-          <button type="button" id="signup-final" class="primary-btn">Create Account</button>
-          <button type="button" id="to-login" class="ghost-btn">Already have account? Login</button>
-        </form>
+        <h2 style="margin-bottom:16px;">Sign Up</h2>
+        <input type="text" id="signup-username" placeholder="Username" style="width:100%;padding:12px;margin-bottom:10px;border-radius:10px;border:1px solid #333;background:#1a1a24;color:white;">
+        <input type="email" id="signup-email" placeholder="Email" style="width:100%;padding:12px;margin-bottom:10px;border-radius:10px;border:1px solid #333;background:#1a1a24;color:white;">
+        <input type="password" id="signup-password" placeholder="Password" style="width:100%;padding:12px;margin-bottom:10px;border-radius:10px;border:1px solid #333;background:#1a1a24;color:white;">
+        <button type="button" id="signup-final" class="primary-btn" style="width:100%;margin-bottom:8px;">Create Account</button>
+        <button type="button" id="to-login" class="ghost-btn" style="width:100%;">Already have account? Login</button>
       </div>
 
-      <div id="auth-msg" style="margin-top:0.6rem;color:var(--muted)"></div>
+      <div id="auth-msg" style="margin-top:12px;color:#aaa;font-size:0.9rem;"></div>
     </div>
   </div>
 
-  <!-- ========== SETTINGS MODAL ========== -->
-  <div id="settings-modal" class="settings-modal hidden">
-    <div class="settings-overlay"></div>
-    <div class="settings-window">
-      <button id="close-settings" class="close-settings">✕</button>
-      <div class="settings-header">
-        <h2>⚙️ Settings</h2>
-        <p>Customize your Snowwflix experience</p>
+  <!-- ========== TRAILER PLAYER MODAL (REQUIRED) ========== -->
+  <div id="trailer-modal" class="modal hidden" tabindex="-1">
+    <div class="modal-backdrop"></div>
+    <div class="sf-player-window">
+      <div class="sf-player-header">
+        <div>
+          <h3 id="player-title">Trailer</h3>
+          <p id="player-sub">Watching on Snowwflix</p>
+        </div>
+        <button type="button" class="sf-player-close" onclick="closeTrailerPlayer()">✕</button>
       </div>
-      <div class="settings-body">
-        <div class="setting-item">
-          <span>🌙 Dark Mode</span>
-          <input type="checkbox" id="darkMode">
+      <div class="sf-player-stage">
+        <div id="player-frame"></div>
+        <button type="button" id="sf-big-play" class="sf-big-play hidden">▶</button>
+        <div id="sf-ended-overlay" class="sf-ended-overlay hidden">
+          <p>Trailer ended</p>
+          <button type="button" class="primary-btn" onclick="closeTrailerPlayer()">Close</button>
         </div>
-        <div class="setting-item">
-          <span>🎬 Autoplay Trailers</span>
-          <input type="checkbox" id="autoplay" checked>
-        </div>
-        <div class="setting-item">
-          <span>🔔 Notifications</span>
-          <input type="checkbox" id="notifications" checked>
-        </div>
-        <div class="setting-item">
-          <span>✨ Animations</span>
-          <input type="checkbox" id="animations" checked>
+      </div>
+      <div class="sf-player-controls">
+        <button type="button" id="sf-btn-play">❚❚</button>
+        <button type="button" id="sf-btn-mute">🔊</button>
+        <div class="sf-progress-wrap">
+          <div class="sf-progress-bar">
+            <div id="sf-progress-played" class="sf-progress-played"></div>
+            <div id="sf-progress-thumb" class="sf-progress-thumb"></div>
+          </div>
+          <div class="sf-time">
+            <span id="sf-time-current">0:00</span> / <span id="sf-time-duration">0:00</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Toast -->
-  <div id="toast-wrap" style="position:fixed;right:1rem;bottom:90px;z-index:1000"></div>
+  <div id="toast-wrap" style="position:fixed;right:1rem;bottom:90px;z-index:1000;"></div>
 
-  <!-- Firebase Config -->
+  <!-- Firebase -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCBjGfxzkCw9DVSfYIqWzrBkGwtAkfgd18",
@@ -346,10 +320,9 @@
     const db = firebase.firestore();
     window.auth = auth;
     window.db = db;
-    console.log("Firebase ready → project:", firebaseConfig.projectId);
   </script>
 
-  <!-- ========== NEW LAYOUT + RATINGS/BLOGS JS ========== -->
+  <!-- Layout + Ratings/Blogs JS -->
   <script>
     function showHome() {
       document.getElementById('new-home').style.display = 'block';
@@ -374,7 +347,6 @@
       document.getElementById('trailers-view').style.display = 'none';
       document.getElementById('ratings-page').style.display = 'none';
       document.getElementById('blogs-page').style.display = 'none';
-
       if (page === 'ratings') {
         document.getElementById('ratings-page').style.display = 'block';
         loadRatings();
@@ -383,10 +355,25 @@
         document.getElementById('blogs-page').style.display = 'block';
         loadBlogs();
       }
-
       document.querySelectorAll('.new-nav-item').forEach(b => b.classList.toggle('active', b.dataset.page === page));
       window.scrollTo({top:0, behavior:'smooth'});
     }
+
+    // Hamburger
+    document.getElementById('hamburger-btn')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.getElementById('side-menu')?.classList.toggle('active');
+    });
+    document.getElementById('side-menu-close')?.addEventListener('click', () => {
+      document.getElementById('side-menu')?.classList.remove('active');
+    });
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('side-menu');
+      const btn = document.getElementById('hamburger-btn');
+      if (menu && !menu.contains(e.target) && !btn?.contains(e.target)) {
+        menu.classList.remove('active');
+      }
+    });
 
     // Ratings
     async function submitRating() {
@@ -407,7 +394,7 @@
         document.getElementById('rating-comment').value = '';
         loadRatings();
         alert('Rating saved!');
-      } catch (e) { console.error(e); alert('Error saving rating'); }
+      } catch (e) { console.error(e); alert('Error saving'); }
     }
 
     async function loadRatings() {
@@ -479,11 +466,24 @@
       } catch(e){ list.innerHTML = '<p style="color:#f66">Error loading</p>'; }
     }
 
-    // Start on home
+    // Player helpers
+    function closeTrailerPlayer() {
+      const modal = document.getElementById('trailer-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+      }
+      try { if (window.ytPlayer && window.ytPlayer.destroy) window.ytPlayer.destroy(); } catch(e){}
+      const mount = document.getElementById('player-frame');
+      if (mount) mount.innerHTML = '';
+    }
+    window.closeTrailerPlayer = closeTrailerPlayer;
+
+    // Start on Home
     document.addEventListener('DOMContentLoaded', showHome);
   </script>
 
-  <!-- Existing scripts that power videos, auth, settings -->
+  <!-- Existing scripts -->
   <script src="https://www.youtube.com/iframe_api"></script>
   <script src="app.js"></script>
   <script src="js/auth.js"></script>
